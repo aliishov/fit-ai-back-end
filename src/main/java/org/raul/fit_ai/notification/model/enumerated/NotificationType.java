@@ -1,0 +1,16 @@
+package org.raul.fit_ai.notification.model.enumerated;
+
+public enum NotificationType {
+	OTP,
+	WELCOME,
+	PASSWORD_CHANGED,
+	EMAIL_VERIFICATION,
+	PHONE_VERIFICATION,
+
+	LOGIN_SUCCESS,
+	WORKOUT_PLAN_GENERATED,
+
+	WORKOUT_REMINDER,
+	WATER_REMINDER,
+	MEAL_REMINDER
+}
