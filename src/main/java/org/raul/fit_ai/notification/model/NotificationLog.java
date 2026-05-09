@@ -1,5 +1,7 @@
 package org.raul.fit_ai.notification.model;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationStatus;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
@@ -32,6 +34,8 @@ import java.util.UUID;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationLog {
