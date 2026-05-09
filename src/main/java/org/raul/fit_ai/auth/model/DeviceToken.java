@@ -1,5 +1,7 @@
 package org.raul.fit_ai.auth.model;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.raul.fit_ai.auth.model.enumerated.DevicePlatform;
 
 import jakarta.persistence.Column;
@@ -35,6 +37,8 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 public class DeviceToken {
 

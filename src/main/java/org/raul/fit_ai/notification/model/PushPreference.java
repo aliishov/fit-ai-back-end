@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalTime;
 import java.util.UUID;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 public class PushPreference {
