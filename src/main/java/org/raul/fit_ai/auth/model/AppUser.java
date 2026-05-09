@@ -3,6 +3,8 @@ package org.raul.fit_ai.auth.model;
 import jakarta.persistence.Column;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 import lombok.Builder;
@@ -13,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 
 @Entity
 @Table(name = "app_users", schema = "auth")
@@ -30,4 +33,9 @@ public class AppUser extends BaseUser {
 
 	@Column(name = "is_phone_verified")
 	Boolean phoneVerified;
+
+	@Builder.Default
+	@Enumerated(EnumType.STRING)
+	@Column(name = "preferred_channel", nullable = false)
+	NotificationChannel preferredChannel = NotificationChannel.EMAIL;
 }
