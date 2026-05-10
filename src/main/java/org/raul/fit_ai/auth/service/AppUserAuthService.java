@@ -11,6 +11,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,10 +37,11 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			@Qualifier("appAuthenticationProvider") AuthenticationProvider authenticationProvider,
 			JwtManager jwtManager,
 			PasswordResetTokenService passwordResetTokenService,
-			PasswordManagementService passwordManagementService
+			PasswordManagementService passwordManagementService,
+			NotificationPublisher notificationPublisher
 	) {
 		super(appUserRepository, authenticationProvider, jwtManager,
-				passwordResetTokenService, passwordManagementService);
+				passwordResetTokenService, passwordManagementService, notificationPublisher);
 		this.appUserMapper = appUserMapper;
 	}
 
@@ -50,6 +54,8 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 		}
 
 		AppUser saved = userRepository.save(appUserMapper.toEntity(request));
+
+		pushNotification(saved, NotificationType.WELCOME);
 
 		log.info("Successfully created app user account [{}]", saved.getId());
 		return URI.create("/api/v1/app/auth/users/" + saved.getId());

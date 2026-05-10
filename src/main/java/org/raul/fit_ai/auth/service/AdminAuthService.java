@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,11 @@ public class AdminAuthService extends BaseAuthService<AdminUser, AdminUserReposi
 			@Qualifier("adminAuthenticationProvider") AuthenticationProvider authenticationProvider,
 			JwtManager jwtManager,
 			PasswordResetTokenService passwordResetTokenService,
-			PasswordManagementService passwordManagementService
+			PasswordManagementService passwordManagementService,
+			NotificationPublisher notificationPublisher
 	) {
 		super(adminRepository, authenticationProvider, jwtManager,
-				passwordResetTokenService, passwordManagementService);
+				passwordResetTokenService, passwordManagementService, notificationPublisher);
 		this.adminUserMapper = adminUserMapper;
 	}
 
@@ -55,6 +57,8 @@ public class AdminAuthService extends BaseAuthService<AdminUser, AdminUserReposi
 		}
 
 		AdminUser saved = userRepository.save(adminUserMapper.toEntity(adminId, request));
+
+		pushNotification(saved, NotificationType.WELCOME);
 
 		log.info("Admin [{}] created new admin account [{}]", adminId, saved.getId());
 		return URI.create("/api/v1/admin/auth/admins/" + saved.getId());

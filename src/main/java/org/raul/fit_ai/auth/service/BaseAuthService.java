@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 	JwtManager jwtManager;
 	PasswordResetTokenService passwordResetTokenService;
 	PasswordManagementService passwordManagementService;
+	NotificationPublisher notificationPublisher;
 
 	@Transactional
 	public SignInResponseDTO signIn(SignInRequestDTO request) {
@@ -85,15 +88,17 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 	public ResetTokenResponseDTO requestPasswordReset(IdentifierRequestDTO request) {
 		String identifier = request.identifier();
 
-		if (!existsByIdentifier(identifier)) {
+		Optional<T> userOpt = findByIdentifier(identifier);
+
+		if (userOpt.isEmpty()) {
 			log.info("Password reset requested for non-existent identifier");
 			return new ResetTokenResponseDTO(UUID.randomUUID().toString());
 		}
 
-		UUID userId = getIdByIdentifier(identifier);
-		String resetToken = passwordResetTokenService.generateOtp(userId, identifier);
+		BaseUser user = userOpt.get();
+		String resetToken = passwordResetTokenService.generateOtp(user, identifier);
 
-		log.info("User [{}] requesting password reset", userId);
+		log.info("User [{}] requesting password reset", user.getId());
 		return new ResetTokenResponseDTO(resetToken);
 	}
 
@@ -112,6 +117,8 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 
 		userRepository.save(user);
 
+		pushNotification(user, NotificationType.PASSWORD_CHANGED);
+
 		log.info("Password reset successfully for user [{}]", user.getId());
 	}
 
@@ -120,4 +127,11 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 	protected abstract boolean existsByIdentifier(String identifier);
 
 	protected abstract UUID getIdByIdentifier(String identifier);
+
+	protected void pushNotification(T user, NotificationType type) {
+		notificationPublisher.publishCritical(
+				NotificationPayload.email(user.getId(), type,
+						user.getEmail(), null)
+		);
+	}
 }

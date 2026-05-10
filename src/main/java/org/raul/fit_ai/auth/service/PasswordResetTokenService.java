@@ -3,10 +3,13 @@ package org.raul.fit_ai.auth.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.raul.fit_ai.auth.dto.request.VerifyOtpRequestDTO;
 import org.raul.fit_ai.auth.dto.response.VerifyOtpResponseDTO;
+import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.PasswordResetToken;
 import org.raul.fit_ai.auth.repository.PasswordResetTokenRepository;
 import org.raul.fit_ai.common.exception.InvalidOtpException;
 import org.raul.fit_ai.common.exception.InvalidTokenException;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 
 import java.util.HexFormat;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,19 +40,19 @@ public class PasswordResetTokenService {
 	static int OTP_EXPIRY_MINUTES = 5;
 
 	PasswordResetTokenRepository passwordResetTokenRepository;
-//	NotificationService notificationService;
+	NotificationPublisher notificationPublisher;
 
-	protected String generateOtp(UUID userId, String identifier) {
-		log.info("Generating OTP for user [{}]", userId);
+	protected String generateOtp(BaseUser user, String identifier) {
+		log.info("Generating OTP for user [{}]", user.getId());
 
 		String otp = generateRawOtp();
 		String otpHash = hashOtp(otp);
 		String resetToken = UUID.randomUUID().toString();
 
-		passwordResetTokenRepository.invalidateAllByUserId(userId, OffsetDateTime.now());
+		passwordResetTokenRepository.invalidateAllByUserId(user.getId(), OffsetDateTime.now());
 
 		PasswordResetToken entity = PasswordResetToken.builder()
-				.userId(userId)
+				.userId(user.getId())
 				.otpHash(otpHash)
 				.resetToken(resetToken)
 				.expiresAt(OffsetDateTime.now().plusMinutes(OTP_EXPIRY_MINUTES))
@@ -56,9 +60,9 @@ public class PasswordResetTokenService {
 
 		passwordResetTokenRepository.save(entity);
 
-//		notificationService.sendOtp(identifier, otp); // TODO
+		pushNotification(user, otp, identifier);
 
-		log.info("OTP sent to [{}], reset token generated for user [{}]", identifier, userId);
+		log.info("OTP sent to [{}], reset token generated for user [{}]", identifier, user.getId());
 		return resetToken;
 	}
 
@@ -126,6 +130,21 @@ public class PasswordResetTokenService {
 
 		if (!token.isVerified()) {
 			throw new InvalidTokenException("Token is not verified");
+		}
+	}
+
+	// Push not suitable for OTP
+	private void pushNotification(BaseUser user, String otp, String identifier) {
+		if (identifier.startsWith("+")) {
+			notificationPublisher.publishCritical(
+					NotificationPayload.sms(user.getId(), NotificationType.OTP,
+							identifier, Map.of("code", otp, "minutes", "5"))
+			);
+		} else {
+			notificationPublisher.publishCritical(
+					NotificationPayload.email(user.getId(), NotificationType.OTP,
+							identifier, Map.of("code", otp, "minutes", "5"))
+			);
 		}
 	}
 }

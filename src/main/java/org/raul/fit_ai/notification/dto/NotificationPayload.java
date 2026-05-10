@@ -16,9 +16,9 @@ public record NotificationPayload(
 		Map<String, String> variables
 ) {
 	public static NotificationPayload email(UUID userId, NotificationType type,
-	                                        String recipient, String subject, Map<String, String> variables) {
+	                                        String recipient,  Map<String, String> variables) {
 		return new NotificationPayload(userId, NotificationChannel.EMAIL,
-				type, recipient, subject, null, variables);
+				type, recipient, null, null, variables);
 	}
 
 	public static NotificationPayload sms(UUID userId, NotificationType type,
