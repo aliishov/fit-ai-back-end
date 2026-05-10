@@ -10,13 +10,15 @@ import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.AdminUserRepository;
 import org.raul.fit_ai.auth.repository.AppUserRepository;
+import org.raul.fit_ai.auth.service.jwt.JwtManager;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,7 @@ public class AccountService {
 	AccountMapper accountMapper;
 	PasswordManagementService passwordManagementService;
 	JwtManager jwtManager;
+	NotificationPublisher notificationPublisher;
 
 	@Transactional(readOnly = true)
 	public AccountResponseDTO getProfile(UserPrincipal principal) {
@@ -56,9 +59,10 @@ public class AccountService {
 
 		if (request.phone() != null) {
 			user.setPhone(request.phone());
+			save(user, false);
+		} else {
+			save(user, true);
 		}
-
-		save(user);
 
 		log.info("User [{}] updated profile", user.getId());
 	}
@@ -76,18 +80,28 @@ public class AccountService {
 		passwordManagementService.validateNewPassword(oldPassword, newPassword);
 		passwordManagementService.updatePassword(user, newPassword);
 
-		save(user);
+		save(user, true);
+
+		pushNotification(user, NotificationType.PASSWORD_CHANGED);
 
 		jwtManager.revokeToken(request.refreshToken());
 	}
 
-	private void save(BaseUser user) {
+	private void save(BaseUser user, boolean phoneVerification) {
 		if (user instanceof AdminUser admin) {
 			adminUserRepository.save(admin);
 		} else if (user instanceof AppUser appUser) {
+			appUser.setPhoneVerified(phoneVerification);
 			appUserRepository.save(appUser);
 		} else {
 			throw new IllegalStateException("Unknown user type: " + user.getClass());
 		}
+	}
+
+	protected void pushNotification(BaseUser user, NotificationType type) {
+		notificationPublisher.publishCritical(
+				NotificationPayload.email(user.getId(), type,
+						user.getEmail(), null)
+		);
 	}
 }

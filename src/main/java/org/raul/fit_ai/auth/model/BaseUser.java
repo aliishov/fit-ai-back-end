@@ -2,6 +2,7 @@ package org.raul.fit_ai.auth.model;
 
 import org.raul.fit_ai.auth.model.enumerated.Role;
 import org.raul.fit_ai.auth.model.enumerated.AuthProvider;
+import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 
 import org.hibernate.proxy.HibernateProxy;
 
@@ -102,6 +103,11 @@ public abstract class BaseUser {
 	@Builder.Default
 	@Column(name = "is_enabled", nullable = false)
 	boolean enabled = true;
+
+	@Builder.Default
+	@Enumerated(EnumType.STRING)
+	@Column(name = "preferred_channel", nullable = false)
+	NotificationChannel preferredChannel = NotificationChannel.EMAIL;
 
 	@Override
 	public final boolean equals(Object o) {
