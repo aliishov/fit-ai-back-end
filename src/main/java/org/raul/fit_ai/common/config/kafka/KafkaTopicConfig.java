@@ -17,33 +17,33 @@ public class KafkaTopicConfig {
 
 	// Critical
 	@Value("${app.kafka.topics.critical.name}")
-	private String criticalTopicName;
+	String criticalTopicName;
 
 	@Value("${app.kafka.topics.critical.partitions}")
-	private int criticalPartitions;
+	int criticalPartitions;
 
 	@Value("${app.kafka.topics.critical.replicas}")
-	private short criticalReplicas;
+	short criticalReplicas;
 
 	// Transactional
 	@Value("${app.kafka.topics.transactional.name}")
-	private String transactionalTopicName;
+	String transactionalTopicName;
 
 	@Value("${app.kafka.topics.transactional.partitions}")
-	private int transactionalPartitions;
+	int transactionalPartitions;
 
 	@Value("${app.kafka.topics.transactional.replicas}")
-	private short transactionalReplicas;
+	short transactionalReplicas;
 
 	// Scheduled
 	@Value("${app.kafka.topics.scheduled.name}")
-	private String scheduledTopicName;
+	String scheduledTopicName;
 
 	@Value("${app.kafka.topics.scheduled.partitions}")
-	private int scheduledPartitions;
+	int scheduledPartitions;
 
 	@Value("${app.kafka.topics.scheduled.replicas}")
-	private short scheduledReplicas;
+	short scheduledReplicas;
 
 	@Bean
 	public NewTopic notificationsCriticalTopic() {
