@@ -1,4 +1,4 @@
-package org.raul.fit_ai.common.service;
+package org.raul.fit_ai.notification.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
