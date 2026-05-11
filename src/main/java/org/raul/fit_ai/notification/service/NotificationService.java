@@ -7,7 +7,11 @@ import org.raul.fit_ai.notification.model.NotificationLog;
 import org.raul.fit_ai.notification.model.NotificationTemplate;
 import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationStatus;
+import org.raul.fit_ai.notification.repository.NotificationLogRepository;
+import org.raul.fit_ai.notification.repository.NotificationTemplateRepository;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -18,11 +22,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class NotificationService {
 
-	private final Map<NotificationChannel, NotificationSender> senders;
-	private final NotificationTemplateRepository templateRepository;
-	private final NotificationLogRepository logRepository;
+	Map<NotificationChannel, NotificationSender> senders;
+	NotificationTemplateRepository templateRepository;
+	NotificationLogRepository logRepository;
 
 	public NotificationService(List<NotificationSender> senderList,
 	                           NotificationTemplateRepository templateRepository,
@@ -35,20 +40,23 @@ public class NotificationService {
 
 	public void send(NotificationPayload payload) {
 		NotificationTemplate template = templateRepository
-				.findByTypeAndChannelAndActiveTrue(payload.type(), payload.channel())
+				.findByTypeAndChannelAndActive(payload.type(), payload.channel(), true)
 				.orElseThrow(() -> new TemplateNotFoundException(
 						"Template not found for type=%s channel=%s"
 								.formatted(payload.type(), payload.channel())));
 
-		ResolvedNotificationPayload resolved = ResolvedNotificationPayload.builder()
-				.userId(payload.userId())
-				.channel(payload.channel())
-				.type(payload.type())
-				.recipient(payload.recipient())
-				.subject(interpolate(template.getSubject(), payload.variables()))
-				.title(interpolate(template.getTitle(), payload.variables()))
-				.body(interpolate(template.getBody(), payload.variables()))
-				.build();
+		String resolvedBody = interpolate(template.getBody(), payload.variables());
+
+		ResolvedNotificationPayload resolved = new ResolvedNotificationPayload(
+				payload.userId(),
+				payload.channel(),
+				payload.type(),
+				payload.recipient(),
+				template.getSubject(),
+				payload.title(),
+				resolvedBody
+		);
+
 
 		NotificationSender sender = senders.get(payload.channel());
 		if (sender == null) {
@@ -89,5 +97,4 @@ public class NotificationService {
 				.errorMessage(error)
 				.build());
 	}
-}
 }
