@@ -1,7 +1,9 @@
 package org.raul.fit_ai.auth.model;
 
-import org.jspecify.annotations.NonNull;
 import org.raul.fit_ai.auth.model.enumerated.Role;
+
+import org.jspecify.annotations.NonNull;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

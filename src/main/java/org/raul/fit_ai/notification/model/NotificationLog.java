@@ -1,10 +1,11 @@
 package org.raul.fit_ai.notification.model;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationStatus;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

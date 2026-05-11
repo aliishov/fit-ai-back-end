@@ -1,6 +1,7 @@
 package org.raul.fit_ai.auth.repository;
 
 import org.raul.fit_ai.auth.model.DeviceToken;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

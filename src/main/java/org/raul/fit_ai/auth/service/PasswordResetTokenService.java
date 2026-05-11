@@ -1,6 +1,5 @@
 package org.raul.fit_ai.auth.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.raul.fit_ai.auth.dto.request.VerifyOtpRequestDTO;
 import org.raul.fit_ai.auth.dto.response.VerifyOtpResponseDTO;
 import org.raul.fit_ai.auth.model.BaseUser;
@@ -15,6 +14,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 

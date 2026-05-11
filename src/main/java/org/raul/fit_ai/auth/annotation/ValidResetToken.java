@@ -1,10 +1,11 @@
 package org.raul.fit_ai.auth.annotation;
 
+import org.raul.fit_ai.auth.util.ValidationPatterns;
+
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import org.raul.fit_ai.auth.util.ValidationPatterns;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

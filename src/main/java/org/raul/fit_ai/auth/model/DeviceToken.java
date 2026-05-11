@@ -1,8 +1,9 @@
 package org.raul.fit_ai.auth.model;
 
+import org.raul.fit_ai.auth.model.enumerated.DevicePlatform;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.raul.fit_ai.auth.model.enumerated.DevicePlatform;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

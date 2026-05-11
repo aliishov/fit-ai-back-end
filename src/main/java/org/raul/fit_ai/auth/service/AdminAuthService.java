@@ -7,12 +7,12 @@ import org.raul.fit_ai.auth.repository.AdminUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
 import org.raul.fit_ai.common.exception.UnauthorizedException;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Service;

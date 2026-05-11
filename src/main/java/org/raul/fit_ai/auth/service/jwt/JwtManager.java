@@ -1,10 +1,13 @@
 package org.raul.fit_ai.auth.service.jwt;
 
+import org.raul.fit_ai.auth.model.UserPrincipal;
+
 import io.jsonwebtoken.Claims;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.raul.fit_ai.auth.model.UserPrincipal;
+
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
