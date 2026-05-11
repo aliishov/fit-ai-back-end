@@ -1,12 +1,14 @@
 package org.raul.fit_ai.notification.service;
 
+import org.raul.fit_ai.common.exception.NotificationException;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.raul.fit_ai.common.exception.NotificationException;
-import org.raul.fit_ai.notification.dto.NotificationPayload;
-import org.raul.fit_ai.notification.model.enumerated.NotificationType;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;

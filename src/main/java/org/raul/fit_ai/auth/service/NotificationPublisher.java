@@ -1,10 +1,12 @@
 package org.raul.fit_ai.auth.service;
 
+import org.raul.fit_ai.notification.service.NotificationEventPublisher;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.raul.fit_ai.notification.service.NotificationEventPublisher;
-import org.raul.fit_ai.notification.dto.NotificationPayload;
+
 import org.springframework.stereotype.Service;
 
 @Service

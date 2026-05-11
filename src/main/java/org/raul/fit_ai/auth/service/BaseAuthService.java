@@ -10,6 +10,8 @@ import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.UnauthorizedException;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.AccessLevel;
@@ -18,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import org.raul.fit_ai.notification.dto.NotificationPayload;
-import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

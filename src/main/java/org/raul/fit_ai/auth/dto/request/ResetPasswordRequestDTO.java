@@ -1,10 +1,11 @@
 package org.raul.fit_ai.auth.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.raul.fit_ai.auth.annotation.ValidEmailOrPhone;
 import org.raul.fit_ai.auth.annotation.ValidPassword;
 import org.raul.fit_ai.auth.annotation.ValidResetToken;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record ResetPasswordRequestDTO(
 

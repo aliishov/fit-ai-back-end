@@ -1,10 +1,12 @@
 package org.raul.fit_ai.auth.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import org.raul.fit_ai.auth.annotation.ValidPhone;
 import org.raul.fit_ai.auth.util.ValidationPatterns;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UpdateProfileRequestDTO(

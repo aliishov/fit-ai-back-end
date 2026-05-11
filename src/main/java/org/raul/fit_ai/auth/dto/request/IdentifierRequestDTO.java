@@ -1,8 +1,9 @@
 package org.raul.fit_ai.auth.dto.request;
 
+import org.raul.fit_ai.auth.annotation.ValidEmailOrPhone;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.raul.fit_ai.auth.annotation.ValidEmailOrPhone;
 
 public record IdentifierRequestDTO(
 

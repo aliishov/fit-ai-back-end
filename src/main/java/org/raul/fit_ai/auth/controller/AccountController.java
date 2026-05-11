@@ -1,15 +1,18 @@
 package org.raul.fit_ai.auth.controller;
 
-import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.raul.fit_ai.auth.dto.request.ChangePasswordRequestDTO;
 import org.raul.fit_ai.auth.dto.request.UpdateProfileRequestDTO;
 import org.raul.fit_ai.auth.dto.response.AccountResponseDTO;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.service.AccountService;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
