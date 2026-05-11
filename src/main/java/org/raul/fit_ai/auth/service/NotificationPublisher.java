@@ -1,6 +1,6 @@
 package org.raul.fit_ai.auth.service;
 
-import org.raul.fit_ai.notification.service.NotificationEventPublisher;
+import org.raul.fit_ai.notification.service.events.NotificationEventPublisher;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 
 import lombok.AccessLevel;

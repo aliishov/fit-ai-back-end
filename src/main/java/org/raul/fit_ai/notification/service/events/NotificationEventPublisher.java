@@ -1,4 +1,4 @@
-package org.raul.fit_ai.notification.service;
+package org.raul.fit_ai.notification.service.events;
 
 import org.raul.fit_ai.common.exception.NotificationException;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
