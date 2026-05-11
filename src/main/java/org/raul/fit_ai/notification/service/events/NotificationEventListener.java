@@ -1,6 +1,7 @@
 package org.raul.fit_ai.notification.service.events;
 
 import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.service.NotificationService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
