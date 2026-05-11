@@ -1,6 +1,7 @@
 package org.raul.fit_ai.notification.service;
 
 import org.raul.fit_ai.common.exception.NotificationException;
+import org.raul.fit_ai.common.exception.TemplateNotFoundException;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 import org.raul.fit_ai.notification.dto.ResolvedNotificationPayload;
 import org.raul.fit_ai.notification.model.NotificationLog;
