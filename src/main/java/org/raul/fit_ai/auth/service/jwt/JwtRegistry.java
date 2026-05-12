@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -62,12 +64,14 @@ public class JwtRegistry {
 	}
 
 	private void revokeTokensByPattern(String pattern, String userId) {
-		var keys = redisTemplate.keys(pattern);
-		if (keys != null) {
-			for (String key : keys) {
+		ScanOptions options = ScanOptions.scanOptions().match(pattern).count(100).build();
+
+		try (Cursor<byte[]> cursor = redisTemplate.getConnectionFactory()
+				.getConnection().scan(options)) {
+			while (cursor.hasNext()) {
+				String key = new String(cursor.next());
 				String storedUserId = redisTemplate.opsForValue().get(key);
 				if (userId.equals(storedUserId)) {
-					// Extract JTI from key
 					String jti = key.substring(key.lastIndexOf(':') + 1);
 					Long ttl = redisTemplate.getExpire(key, TimeUnit.MILLISECONDS);
 					if (ttl != null && ttl > 0) {
