@@ -1,7 +1,6 @@
 package org.raul.fit_ai.auth.model;
 
 import org.raul.fit_ai.auth.model.enumerated.Role;
-import org.raul.fit_ai.auth.model.enumerated.AuthProvider;
 import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 
 import org.hibernate.proxy.HibernateProxy;
@@ -68,15 +67,6 @@ public abstract class BaseUser {
 
 	@Column(name = "password_hash", columnDefinition = "TEXT")
 	String passwordHash;
-
-	@Column(name = "provider_id")
-	String providerId;
-
-	@ToString.Include
-	@Builder.Default
-	@Enumerated(EnumType.STRING)
-	@Column(name = "provider", nullable = false)
-	AuthProvider provider = AuthProvider.LOCAL;
 
 	@ToString.Include
 	@Builder.Default
