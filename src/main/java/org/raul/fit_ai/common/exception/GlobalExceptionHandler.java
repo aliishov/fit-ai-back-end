@@ -3,8 +3,8 @@ package org.raul.fit_ai.common.exception;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 
 import jakarta.validation.ConstraintViolation;
-
 import jakarta.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
