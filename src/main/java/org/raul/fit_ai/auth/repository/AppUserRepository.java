@@ -1,6 +1,7 @@
 package org.raul.fit_ai.auth.repository;
 
 import org.raul.fit_ai.auth.model.AppUser;
+import org.raul.fit_ai.auth.model.enumerated.AuthProvider;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,8 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 
 	@Query("SELECT u.id FROM AppUser u WHERE u.email = :identifier OR u.phone = :identifier")
 	UUID getIdByIdentifier(String identifier);
+
+	Optional<AppUser> findByProviderAndProviderId(AuthProvider provider, String providerId);
+
+	Optional<AppUser> findByEmail(String email);
 }
