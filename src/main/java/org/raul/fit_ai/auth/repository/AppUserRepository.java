@@ -4,6 +4,7 @@ import org.raul.fit_ai.auth.model.AppUser;
 import org.raul.fit_ai.auth.model.enumerated.AuthProvider;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,8 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 	Optional<AppUser> findByProviderAndProviderId(AuthProvider provider, String providerId);
 
 	Optional<AppUser> findByEmail(String email);
+
+	@Modifying
+	@Query("UPDATE AppUser au SET au.lastSignIn = NOW() WHERE au.id = :userId")
+	void updateLastSignInByUserId(@Param("userId") UUID userId);
 }
