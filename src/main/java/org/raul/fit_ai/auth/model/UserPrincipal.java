@@ -7,12 +7,14 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-public record UserPrincipal(BaseUser user, String identifier) implements UserDetails {
+public record UserPrincipal(BaseUser user, String identifier) implements UserDetails, OAuth2User {
 
 	public UserPrincipal(BaseUser user) {
 		this(user, user.getEmail());
@@ -59,5 +61,19 @@ public record UserPrincipal(BaseUser user, String identifier) implements UserDet
 
 	public Role getRole() {
 		return user.getRole();
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return Map.of(
+				"id",    user.getId().toString(),
+				"email", user.getEmail() != null ? user.getEmail() : "",
+				"role",  user.getRole().name()
+		);
+	}
+
+	@Override
+	public String getName() {
+		return user.getId().toString();
 	}
 }

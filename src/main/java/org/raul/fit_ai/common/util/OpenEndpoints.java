@@ -11,6 +11,8 @@ public class OpenEndpoints {
 			"/api/v1/admin/auth/passwords/reset",
 			"/api/v1/admin/auth/sessions/refresh",
 			"/api/v1/auth/otp",
+			"/oauth2/**",
+			"/login/oauth2/**",
 			"/actuator/**",
 			"/swagger-ui/**",
 			"/v3/api-docs/**",
