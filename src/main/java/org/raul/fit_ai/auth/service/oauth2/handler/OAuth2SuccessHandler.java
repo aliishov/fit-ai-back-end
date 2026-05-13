@@ -1,4 +1,4 @@
-package org.raul.fit_ai.auth.service.oauth2.hendler;
+package org.raul.fit_ai.auth.service.oauth2.handler;
 
 import org.raul.fit_ai.auth.dto.response.SignInResponseDTO;
 import org.raul.fit_ai.auth.model.UserPrincipal;
