@@ -5,6 +5,7 @@ import org.raul.fit_ai.auth.model.enumerated.DevicePlatform;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -41,6 +42,8 @@ import java.util.UUID;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "dt_seq",
+		sequenceName = "auth.device_tokens_seq", allocationSize = 50)
 public class DeviceToken {
 
 	@Id

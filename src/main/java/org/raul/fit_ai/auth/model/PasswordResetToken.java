@@ -6,6 +6,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -36,6 +37,8 @@ import java.util.UUID;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "prt_seq",
+		sequenceName = "auth.password_reset_tokens_seq", allocationSize = 50)
 public class PasswordResetToken {
 
 	@Id

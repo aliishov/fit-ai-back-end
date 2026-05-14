@@ -3,6 +3,7 @@ package org.raul.fit_ai.notification.model;
 import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -33,6 +34,8 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "nt_seq",
+		sequenceName = "notifications.notification_templates_seq", allocationSize = 50)
 public class NotificationTemplate {
 
 	@Id
