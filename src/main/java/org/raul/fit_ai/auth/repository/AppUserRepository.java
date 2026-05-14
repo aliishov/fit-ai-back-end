@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 	Optional<AppUser> findByEmail(String email);
 
 	@Modifying
-	@Query("UPDATE AppUser au SET au.lastSignIn = NOW() WHERE au.id = :userId")
-	void updateLastSignInByUserId(@Param("userId") UUID userId);
+	@Query("UPDATE AppUser au SET au.lastSignIn = :lastSignIn WHERE au.id = :userId")
+	void updateLastSignInByUserId(@Param("userId") UUID userId,
+	                              @Param("lastSignIn") OffsetDateTime lastSignIn);
 }
