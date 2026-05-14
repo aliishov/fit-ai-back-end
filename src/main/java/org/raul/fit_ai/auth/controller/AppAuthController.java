@@ -1,6 +1,5 @@
 package org.raul.fit_ai.auth.controller;
 
-import org.raul.fit_ai.auth.annotation.AppUser;
 import org.raul.fit_ai.auth.dto.request.IdentifierRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RefreshTokenRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RegisterRequestDTO;
@@ -31,7 +30,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Validated
-@AppUser
 public class AppAuthController {
 
 	AppUserAuthService appUserAuthService;
