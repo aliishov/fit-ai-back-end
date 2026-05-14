@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 		log.info("OAuth2 login successful for user=[{}]", principal.getId());
 
-		appUserRepository.updateLastSignInByUserId(principal.getId());
+		appUserRepository.updateLastSignInByUserId(principal.getId(), OffsetDateTime.now());
 
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);

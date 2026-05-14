@@ -48,7 +48,7 @@ public class AccountController {
 		return ResponseEntity.ok(BaseResponseDTO.success("Profile updated successfully"));
 	}
 
-	@PatchMapping
+	@PatchMapping("/password")
 	public ResponseEntity<BaseResponseDTO<Void>> updatePassword(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ChangePasswordRequestDTO request

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
@@ -43,6 +44,7 @@ public class PasswordResetTokenService {
 	PasswordResetTokenRepository passwordResetTokenRepository;
 	NotificationPublisher notificationPublisher;
 
+	@Transactional
 	protected String generateOtp(BaseUser user, String identifier) {
 		log.info("Generating OTP for user [{}]", user.getId());
 

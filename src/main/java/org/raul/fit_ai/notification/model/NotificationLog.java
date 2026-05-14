@@ -7,6 +7,7 @@ import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,6 +40,8 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "nl_seq",
+		sequenceName = "notifications.notification_logs_seq", allocationSize = 50)
 public class NotificationLog {
 
 	@Id

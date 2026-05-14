@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -31,6 +32,8 @@ import java.util.UUID;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "pp_seq",
+		sequenceName = "notifications.push_preferences_seq", allocationSize = 50)
 public class PushPreference {
 
 	@Id

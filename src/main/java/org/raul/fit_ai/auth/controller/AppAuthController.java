@@ -31,7 +31,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Validated
-@AppUser
 public class AppAuthController {
 
 	AppUserAuthService appUserAuthService;
@@ -77,6 +76,7 @@ public class AppAuthController {
 				.ok(BaseResponseDTO.success("Password reset successfully"));
 	}
 
+	@AppUser
 	// POST /api/v1/app/auth/sessions/refresh
 	@PostMapping("/sessions/refresh")
 	public ResponseEntity<BaseResponseDTO<SignInResponseDTO>> refreshToken(

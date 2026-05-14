@@ -85,6 +85,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 		return new SignInResponseDTO(newAccessToken, newRefreshToken);
 	}
 
+	@Transactional
 	public ResetTokenResponseDTO requestPasswordReset(IdentifierRequestDTO request) {
 		String identifier = request.identifier();
 
@@ -129,7 +130,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 	protected abstract UUID getIdByIdentifier(String identifier);
 
 	protected void pushNotification(T user, NotificationType type) {
-		notificationPublisher.publishCritical(
+		notificationPublisher.publish(
 				NotificationPayload.email(user.getId(), type,
 						user.getEmail(), null)
 		);
