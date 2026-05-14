@@ -35,12 +35,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Validated
-@AdminUser
 public class AdminAuthController {
 
 	AdminAuthService adminAuthService;
 
 	// POST /api/v1/admin/auth/admins
+	@AdminUser
 	@PostMapping("/admins")
 	public ResponseEntity<BaseResponseDTO<Void>> createAdmin(
 			@AuthenticationPrincipal UserPrincipal principal,
@@ -85,6 +85,7 @@ public class AdminAuthController {
 	}
 
 	// POST /api/v1/admin/auth/sessions/refresh
+	@AdminUser
 	@PostMapping("/sessions/refresh")
 	public ResponseEntity<BaseResponseDTO<SignInResponseDTO>> refreshToken(
 			@RequestBody @Valid RefreshTokenRequestDTO request

@@ -1,5 +1,6 @@
 package org.raul.fit_ai.auth.controller;
 
+import org.raul.fit_ai.auth.annotation.AppUser;
 import org.raul.fit_ai.auth.dto.request.IdentifierRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RefreshTokenRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RegisterRequestDTO;
@@ -75,6 +76,7 @@ public class AppAuthController {
 				.ok(BaseResponseDTO.success("Password reset successfully"));
 	}
 
+	@AppUser
 	// POST /api/v1/app/auth/sessions/refresh
 	@PostMapping("/sessions/refresh")
 	public ResponseEntity<BaseResponseDTO<SignInResponseDTO>> refreshToken(
