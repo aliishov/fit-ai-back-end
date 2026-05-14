@@ -14,7 +14,8 @@ public class OpenEndpoints {
 			"/api/v1/admin/auth/passwords/reset-request",
 			"/api/v1/admin/auth/passwords/reset",
 
-			"/api/v1/auth/otp",
+			"/api/v1/auth/otp/verify",
+
 			"/oauth2/**",
 			"/login/oauth2/**",
 			"/actuator/**",
