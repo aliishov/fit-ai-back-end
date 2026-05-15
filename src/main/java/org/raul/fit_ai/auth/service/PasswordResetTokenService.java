@@ -20,15 +20,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
 import java.time.OffsetDateTime;
 
-import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,9 +31,9 @@ import java.util.UUID;
 @Slf4j
 public class PasswordResetTokenService {
 
-	static int OTP_LENGTH = 6;
 	static int OTP_EXPIRY_MINUTES = 5;
 
+	OtpService otpService;
 	PasswordResetTokenRepository passwordResetTokenRepository;
 	NotificationPublisher notificationPublisher;
 
@@ -48,8 +41,8 @@ public class PasswordResetTokenService {
 	protected String generateOtp(BaseUser user, String identifier) {
 		log.info("Generating OTP for user [{}]", user.getId());
 
-		String otp = generateRawOtp();
-		String otpHash = hashOtp(otp);
+		String otp = otpService.generateRawOtp();
+		String otpHash = otpService.hashOtp(otp);
 		String resetToken = UUID.randomUUID().toString();
 
 		passwordResetTokenRepository.invalidateAllByUserId(user.getId(), OffsetDateTime.now());
@@ -85,33 +78,13 @@ public class PasswordResetTokenService {
 			return new VerifyOtpResponseDTO(request.resetToken(), true);
 		}
 
-		if (!verifyOtpHash(request.rawOtp(), token.getOtpHash()))
+		if (!otpService.verifyOtpHash(request.rawOtp(), token.getOtpHash()))
 			throw new InvalidOtpException("Invalid OTP");
 
 		token.setVerified(true);
 		passwordResetTokenRepository.save(token);
 
 		return new VerifyOtpResponseDTO(request.resetToken(), true);
-	}
-
-	private String generateRawOtp() {
-		SecureRandom random = new SecureRandom();
-		int otp = random.nextInt((int) Math.pow(10, OTP_LENGTH));
-		return String.format("%0" + OTP_LENGTH + "d", otp);
-	}
-
-	private String hashOtp(String otp) {
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(otp.getBytes(StandardCharsets.UTF_8));
-			return HexFormat.of().formatHex(hash);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("SHA-256 not available", e);
-		}
-	}
-
-	private boolean verifyOtpHash(String rawOtp, String storedHash) {
-		return hashOtp(rawOtp).equals(storedHash);
 	}
 
 	public void verifyResetToken(String resetToken, UUID userId) {
