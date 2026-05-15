@@ -1,6 +1,7 @@
 package org.raul.fit_ai.auth.controller;
 
 import org.raul.fit_ai.auth.annotation.AppUser;
+import org.raul.fit_ai.auth.dto.request.EmailRequestDTO;
 import org.raul.fit_ai.auth.dto.request.IdentifierRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RefreshTokenRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RegisterRequestDTO;
@@ -8,6 +9,7 @@ import org.raul.fit_ai.auth.dto.request.ResetPasswordRequestDTO;
 import org.raul.fit_ai.auth.dto.request.SignInRequestDTO;
 import org.raul.fit_ai.auth.dto.response.ResetTokenResponseDTO;
 import org.raul.fit_ai.auth.dto.response.SignInResponseDTO;
+import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.service.AppUserAuthService;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 
@@ -18,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,8 +79,8 @@ public class AppAuthController {
 				.ok(BaseResponseDTO.success("Password reset successfully"));
 	}
 
-	@AppUser
 	// POST /api/v1/app/auth/sessions/refresh
+	@AppUser
 	@PostMapping("/sessions/refresh")
 	public ResponseEntity<BaseResponseDTO<SignInResponseDTO>> refreshToken(
 			@RequestBody @Valid RefreshTokenRequestDTO request
@@ -85,5 +88,16 @@ public class AppAuthController {
 		SignInResponseDTO data = appUserAuthService.refreshToken(request);
 		return ResponseEntity
 				.ok(BaseResponseDTO.success(data, "Token refreshed successfully"));
+	}
+
+	@AppUser
+	@PostMapping("/email/send-confirmation")
+	public ResponseEntity<BaseResponseDTO<Void>> sendEmailConfirmation(
+			@AuthenticationPrincipal UserPrincipal user,
+			@RequestBody @Valid EmailRequestDTO request
+	) {
+		appUserAuthService.sendEmailConfirmation(user.getId(), request);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success("Email send successfully"));
 	}
 }
