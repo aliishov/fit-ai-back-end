@@ -1,8 +1,10 @@
 package org.raul.fit_ai.auth.service;
 
+import org.raul.fit_ai.auth.dto.request.EmailConfirmRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RegisterRequestDTO;
 import org.raul.fit_ai.auth.mapper.AppUserMapper;
 import org.raul.fit_ai.auth.model.AppUser;
+import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.AppUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
@@ -17,6 +19,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import java.net.URI;
 
 import java.util.Optional;
@@ -28,6 +32,7 @@ import java.util.UUID;
 public class AppUserAuthService extends BaseAuthService<AppUser, AppUserRepository> {
 
 	AppUserMapper appUserMapper;
+	EmailConfirmationTokenService emailConfirmationTokenService;
 
 	public AppUserAuthService(
 			AppUserRepository appUserRepository,
@@ -36,11 +41,13 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			JwtManager jwtManager,
 			PasswordResetTokenService passwordResetTokenService,
 			PasswordManagementService passwordManagementService,
-			NotificationPublisher notificationPublisher
+			NotificationPublisher notificationPublisher,
+			EmailConfirmationTokenService emailConfirmationTokenService
 	) {
 		super(appUserRepository, authenticationProvider, jwtManager,
 				passwordResetTokenService, passwordManagementService, notificationPublisher);
 		this.appUserMapper = appUserMapper;
+		this.emailConfirmationTokenService = emailConfirmationTokenService;
 	}
 
 	@Transactional
@@ -72,5 +79,27 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 	@Override
 	protected UUID getIdByIdentifier(String identifier) {
 		return userRepository.getIdByIdentifier(identifier);
+	}
+
+	@Transactional
+	public void sendEmailConfirmation(UserPrincipal principal) {
+		log.info("Sending email confirmation to user [{}]", principal.getId());
+
+		AppUser user = userRepository.findById(principal.getId())
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+		emailConfirmationTokenService.generateOtp(user, user.getEmail());
+	}
+
+	public void emailConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
+		log.info("Confirming email confirmation to user [{}]", principal.getId());
+
+		AppUser user = userRepository.findById(principal.getId())
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+		if (emailConfirmationTokenService.confirm(request)) {
+			user.setEmailVerified(true);
+			userRepository.save(user);
+		}
 	}
 }
