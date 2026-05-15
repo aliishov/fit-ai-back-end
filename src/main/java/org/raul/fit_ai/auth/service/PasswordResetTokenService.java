@@ -25,14 +25,13 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.raul.fit_ai.auth.service.OtpService.OTP_EXPIRY_MINUTES;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class PasswordResetTokenService {
-
-	static int OTP_EXPIRY_MINUTES = 5;
-
 	OtpService otpService;
 	PasswordResetTokenRepository passwordResetTokenRepository;
 	NotificationPublisher notificationPublisher;

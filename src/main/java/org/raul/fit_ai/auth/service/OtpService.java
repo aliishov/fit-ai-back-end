@@ -12,6 +12,7 @@ import java.util.HexFormat;
 public class OtpService {
 
 	private static final int OTP_LENGTH = 6;
+	protected static final int OTP_EXPIRY_MINUTES = 5;
 
 	protected String generateRawOtp() {
 		SecureRandom random = new SecureRandom();

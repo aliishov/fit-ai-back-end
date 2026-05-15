@@ -1,7 +1,7 @@
 package org.raul.fit_ai.auth.controller;
 
 import org.raul.fit_ai.auth.annotation.AppUser;
-import org.raul.fit_ai.auth.dto.request.EmailRequestDTO;
+import org.raul.fit_ai.auth.dto.request.EmailConfirmRequestDTO;
 import org.raul.fit_ai.auth.dto.request.IdentifierRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RefreshTokenRequestDTO;
 import org.raul.fit_ai.auth.dto.request.RegisterRequestDTO;
@@ -93,11 +93,21 @@ public class AppAuthController {
 	@AppUser
 	@PostMapping("/email/send-confirmation")
 	public ResponseEntity<BaseResponseDTO<Void>> sendEmailConfirmation(
-			@AuthenticationPrincipal UserPrincipal user,
-			@RequestBody @Valid EmailRequestDTO request
+			@AuthenticationPrincipal UserPrincipal principal
 	) {
-		appUserAuthService.sendEmailConfirmation(user.getId(), request);
+		appUserAuthService.sendEmailConfirmation(principal);
 		return ResponseEntity
 				.ok(BaseResponseDTO.success("Email send successfully"));
+	}
+
+	@AppUser
+	@PostMapping("/email/confirm")
+	public ResponseEntity<BaseResponseDTO<Void>> emailConfirm(
+			@AuthenticationPrincipal UserPrincipal principal,
+			@RequestBody @Valid EmailConfirmRequestDTO request
+	) {
+		appUserAuthService.emailConfirm(principal, request);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success("Email confirmed successfully"));
 	}
 }
