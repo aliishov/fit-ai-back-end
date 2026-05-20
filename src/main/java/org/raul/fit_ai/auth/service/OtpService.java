@@ -57,19 +57,19 @@ public class OtpService {
 	}
 
 	@Transactional
-	public void verifyOtp(UUID userId, OtpType type, String rawOtp) {
+	public boolean verifyOtp(UUID userId, OtpType type, String rawOtp) {
 		OtpToken token = otpTokenRepository
 				.findByUserIdAndTypeAndUsedAtIsNull(userId, type)
 				.orElseThrow(() -> new InvalidOtpException("Invalid OTP"));
 
-		validate(
-				token.isExpired(), token.isUsed(), token.isVerified(),
-				rawOtp, token.getOtpHash()
-		);
+		validate(token.isExpired(), token.isUsed(), token.isVerified(),
+				rawOtp, token.getOtpHash());
 
 		token.setVerified(true);
 		token.setUsedAt(OffsetDateTime.now());
 		otpTokenRepository.save(token);
+
+		return true;
 	}
 
 	protected String generateRawOtp() {
