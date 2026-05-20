@@ -8,6 +8,8 @@ import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.AppUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
@@ -23,6 +25,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.net.URI;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,6 +36,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 	AppUserMapper appUserMapper;
 	EmailConfirmationTokenService emailConfirmationTokenService;
+	OtpService otpService;
 
 	public AppUserAuthService(
 			AppUserRepository appUserRepository,
@@ -42,12 +46,14 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			PasswordResetTokenService passwordResetTokenService,
 			PasswordManagementService passwordManagementService,
 			NotificationPublisher notificationPublisher,
-			EmailConfirmationTokenService emailConfirmationTokenService
+			EmailConfirmationTokenService emailConfirmationTokenService,
+			OtpService otpService
 	) {
 		super(appUserRepository, authenticationProvider, jwtManager,
 				passwordResetTokenService, passwordManagementService, notificationPublisher);
 		this.appUserMapper = appUserMapper;
 		this.emailConfirmationTokenService = emailConfirmationTokenService;
+		this.otpService = otpService;
 	}
 
 	@Transactional
@@ -91,6 +97,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 		emailConfirmationTokenService.generateEmailConfirmationToken(user, user.getEmail());
 	}
 
+	@Transactional
 	public void emailConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
 		log.info("Confirming email confirmation to user [{}]", principal.getId());
 
@@ -101,5 +108,37 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			user.setEmailVerified(true);
 			userRepository.save(user);
 		}
+	}
+
+	@Transactional
+	public void sendPhoneConfirmation(UserPrincipal principal) {
+		log.info("Sending sms confirmation to user [{}]", principal.getId());
+
+		AppUser user = userRepository.findById(principal.getId())
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+		String rawOtp = otpService.generateRawOtp();
+		notificationPublisher.publishCritical(
+				NotificationPayload.sms(
+						user.getId(),
+						NotificationType.PHONE_VERIFICATION,
+						user.getPhone(),
+						Map.of("rawOtp", rawOtp)
+				)
+		);
+	}
+
+	@Transactional
+	public void phoneConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
+		log.info("Confirming phone confirmation to user [{}]", principal.getId());
+
+		AppUser user = userRepository.findById(principal.getId())
+				.orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+		// TODO
+//		if (otpService.validate()) {
+//			user.setPhoneVerified(true);
+//			userRepository.save(user);
+//		}
 	}
 }
