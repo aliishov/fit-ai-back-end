@@ -88,7 +88,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-		emailConfirmationTokenService.generateOtp(user, user.getEmail());
+		emailConfirmationTokenService.generateEmailConfirmationToken(user, user.getEmail());
 	}
 
 	public void emailConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
@@ -97,7 +97,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-		if (emailConfirmationTokenService.confirm(request)) {
+		if (emailConfirmationTokenService.confirm(principal.getId(), request)) {
 			user.setEmailVerified(true);
 			userRepository.save(user);
 		}

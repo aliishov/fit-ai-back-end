@@ -1,5 +1,8 @@
 package org.raul.fit_ai.auth.service;
 
+import org.raul.fit_ai.common.exception.InvalidOtpException;
+import org.raul.fit_ai.common.exception.InvalidTokenException;
+
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -30,7 +33,28 @@ public class OtpService {
 		}
 	}
 
-	protected boolean verifyOtpHash(String rawOtp, String storedHash) {
+	private boolean verifyOtpHash(String rawOtp, String storedHash) {
 		return hashOtp(rawOtp).equals(storedHash);
+	}
+
+	public void validate(
+			boolean isExpired, boolean isUsed,
+			boolean isVerified, String rawOtp, String storedHash
+	) {
+		if (isExpired) {
+			throw new InvalidTokenException("Token expired");
+		}
+
+		if (isUsed) {
+			throw new InvalidTokenException("Token already used");
+		}
+
+		if (isVerified) {
+			throw new InvalidTokenException("Token already verified");
+		}
+
+		if (!verifyOtpHash(rawOtp, storedHash)) {
+			throw new InvalidOtpException("Invalid OTP");
+		}
 	}
 }
