@@ -9,7 +9,6 @@ import org.raul.fit_ai.auth.repository.AppUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
-import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
@@ -35,7 +34,6 @@ import java.util.UUID;
 public class AppUserAuthService extends BaseAuthService<AppUser, AppUserRepository> {
 
 	AppUserMapper appUserMapper;
-	EmailConfirmationTokenService emailConfirmationTokenService;
 	OtpService otpService;
 
 	public AppUserAuthService(
@@ -46,13 +44,11 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			PasswordResetTokenService passwordResetTokenService,
 			PasswordManagementService passwordManagementService,
 			NotificationPublisher notificationPublisher,
-			EmailConfirmationTokenService emailConfirmationTokenService,
 			OtpService otpService
 	) {
 		super(appUserRepository, authenticationProvider, jwtManager,
 				passwordResetTokenService, passwordManagementService, notificationPublisher);
 		this.appUserMapper = appUserMapper;
-		this.emailConfirmationTokenService = emailConfirmationTokenService;
 		this.otpService = otpService;
 	}
 
@@ -93,8 +89,8 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-		emailConfirmationTokenService.generateEmailConfirmationToken(user, user.getEmail());
+		// TODO
+//		emailConfirmationTokenService.generateEmailConfirmationToken(user, user.getEmail());
 	}
 
 	@Transactional
@@ -104,10 +100,11 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-		if (emailConfirmationTokenService.confirm(principal.getId(), request)) {
-			user.setEmailVerified(true);
-			userRepository.save(user);
-		}
+		// TODO
+//		if (emailConfirmationTokenService.confirm(principal.getId(), request)) {
+//			user.setEmailVerified(true);
+//			userRepository.save(user);
+//		}
 	}
 
 	@Transactional
