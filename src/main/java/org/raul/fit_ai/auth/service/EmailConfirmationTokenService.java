@@ -5,7 +5,6 @@ import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.EmailVerificationToken;
 import org.raul.fit_ai.auth.repository.EmailConfirmationTokenRepository;
 import org.raul.fit_ai.common.exception.InvalidOtpException;
-import org.raul.fit_ai.common.exception.InvalidTokenException;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.raul.fit_ai.auth.service.OtpService.OTP_EXPIRY_MINUTES;
 
@@ -33,7 +33,7 @@ public class EmailConfirmationTokenService {
 	OtpService otpService;
 
 	@Transactional
-	protected void generateOtp(BaseUser user, String identifier) {
+	protected void generateEmailConfirmationToken(BaseUser user, String identifier) {
 		log.info("Generating OTP for user [{}]", user.getId());
 
 		String otp = otpService.generateRawOtp();
@@ -61,29 +61,19 @@ public class EmailConfirmationTokenService {
 		);
 	}
 
-	public boolean confirm(EmailConfirmRequestDTO request) {
-		return verifyOtp(request.rawOtp());
+	public boolean confirm(UUID userId, EmailConfirmRequestDTO request) {
+		return verifyOtp(userId, request.rawOtp());
 	}
 
-	public boolean verifyOtp(String otpRaw) {
+	private boolean verifyOtp(UUID userId, String otpRaw) {
 		EmailVerificationToken token = emailConfirmationTokenRepository
-				.findByOtpHash(otpService.hashOtp(otpRaw))
+				.findByUserIdAndUsedAtIsNull(userId)
 				.orElseThrow(() -> new InvalidOtpException("Invalid OTP"));
 
-		if (token.isExpired()) {
-			throw new InvalidTokenException("Token expired");
-		}
-
-		if (token.isVerified()) {
-			throw new InvalidTokenException("Token already verified");
-		}
-
-		if (token.isUsed()) {
-			throw new InvalidTokenException("Token already used");
-		}
-
-		if (!otpService.verifyOtpHash(otpRaw, token.getOtpHash()))
-			throw new InvalidOtpException("Invalid OTP");
+		otpService.validate(
+				token.isExpired(), token.isUsed(), token.isVerified(),
+				otpRaw, token.getOtpHash()
+		);
 
 		token.setVerified(true);
 		token.setUsedAt(OffsetDateTime.now());

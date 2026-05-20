@@ -19,5 +19,5 @@ public interface EmailConfirmationTokenRepository extends JpaRepository<EmailVer
 	@Query("UPDATE EmailVerificationToken t SET t.usedAt = :now WHERE t.userId = :userId AND t.usedAt IS NULL")
 	void invalidateAllByUserId(@Param("userId") UUID userId, @Param("now") OffsetDateTime now);
 
-	Optional<EmailVerificationToken> findByOtpHash(String otpHash);
+	Optional<EmailVerificationToken> findByUserIdAndUsedAtIsNull(UUID userId);
 }

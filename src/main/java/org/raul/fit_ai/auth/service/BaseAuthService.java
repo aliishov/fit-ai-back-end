@@ -97,7 +97,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 		}
 
 		BaseUser user = userOpt.get();
-		String resetToken = passwordResetTokenService.generateOtp(user, identifier);
+		String resetToken = passwordResetTokenService.generatePasswordResetToken(user, identifier);
 
 		log.info("User [{}] requesting password reset", user.getId());
 		return new ResetTokenResponseDTO(resetToken);

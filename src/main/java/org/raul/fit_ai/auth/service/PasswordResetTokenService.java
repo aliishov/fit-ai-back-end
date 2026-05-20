@@ -5,7 +5,6 @@ import org.raul.fit_ai.auth.dto.response.VerifyOtpResponseDTO;
 import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.PasswordResetToken;
 import org.raul.fit_ai.auth.repository.PasswordResetTokenRepository;
-import org.raul.fit_ai.common.exception.InvalidOtpException;
 import org.raul.fit_ai.common.exception.InvalidTokenException;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
@@ -32,12 +31,13 @@ import static org.raul.fit_ai.auth.service.OtpService.OTP_EXPIRY_MINUTES;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class PasswordResetTokenService {
+
 	OtpService otpService;
 	PasswordResetTokenRepository passwordResetTokenRepository;
 	NotificationPublisher notificationPublisher;
 
 	@Transactional
-	protected String generateOtp(BaseUser user, String identifier) {
+	protected String generatePasswordResetToken(BaseUser user, String identifier) {
 		log.info("Generating OTP for user [{}]", user.getId());
 
 		String otp = otpService.generateRawOtp();
@@ -65,20 +65,14 @@ public class PasswordResetTokenService {
 		PasswordResetToken token = passwordResetTokenRepository.findByResetToken(request.resetToken())
 				.orElseThrow(() -> new InvalidTokenException("Token not found"));
 
-		if (token.isExpired()) {
-			throw new InvalidTokenException("Token expired");
-		}
-
-		if (token.isUsed()) {
-			throw new InvalidTokenException("Token already used");
-		}
-
 		if (token.isVerified()) {
 			return new VerifyOtpResponseDTO(request.resetToken(), true);
 		}
 
-		if (!otpService.verifyOtpHash(request.rawOtp(), token.getOtpHash()))
-			throw new InvalidOtpException("Invalid OTP");
+		otpService.validate(
+				token.isExpired(), token.isUsed(), token.isVerified(),
+				request.rawOtp(), token.getOtpHash()
+		);
 
 		token.setVerified(true);
 		passwordResetTokenRepository.save(token);
