@@ -110,4 +110,25 @@ public class AppAuthController {
 		return ResponseEntity
 				.ok(BaseResponseDTO.success("Email confirmed successfully"));
 	}
+
+	@AppUser
+	@PostMapping("/phone/send-confirmation")
+	public ResponseEntity<BaseResponseDTO<Void>> sendPhoneConfirmation(
+			@AuthenticationPrincipal UserPrincipal principal
+	) {
+		appUserAuthService.sendPhoneConfirmation(principal);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success("SMS send successfully"));
+	}
+
+	@AppUser
+	@PostMapping("/phone/confirm")
+	public ResponseEntity<BaseResponseDTO<Void>> phoneConfirm(
+			@AuthenticationPrincipal UserPrincipal principal,
+			@RequestBody @Valid EmailConfirmRequestDTO request
+	) {
+		appUserAuthService.phoneConfirm(principal, request);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success("Phone confirmed successfully"));
+	}
 }
