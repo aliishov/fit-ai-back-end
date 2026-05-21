@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class TwilioSmsSender implements NotificationSender {
 
 	TwilioProperties twilioProperties;
+	SmsRateLimitService smsRateLimitService;
 
 	@Override
 	public void send(ResolvedNotificationPayload payload) {
@@ -37,6 +38,8 @@ public class TwilioSmsSender implements NotificationSender {
 			log.error("Failed to send SMS to [{}]", payload.recipient(), e);
 			throw new NotificationException("Failed to send SMS to " + payload.recipient());
 		}
+
+		smsRateLimitService.validateRateLimit(payload.recipient());
 	}
 
 	@Override
