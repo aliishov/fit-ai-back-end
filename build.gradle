@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'com.twilio.sdk:twilio:11.2.0'
+    implementation 'com.google.firebase:firebase-admin:9.9.0'
     implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     compileOnly 'org.projectlombok:lombok'

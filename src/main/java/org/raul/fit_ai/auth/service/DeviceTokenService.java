@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -37,5 +40,15 @@ public class DeviceTokenService {
 				.orElseGet(() -> deviceTokenMapper.toEntity(request, principal.getId()));
 
 		deviceTokenRepository.save(deviceToken);
+	}
+
+	@Transactional(readOnly = true)
+	public List<String> findActiveTokenByUserId(UUID userId) {
+		return deviceTokenRepository.findActiveTokensByUserId(userId);
+	}
+
+	@Transactional()
+	public void deactivateByToken(String deviceToken) {
+		deviceTokenRepository.deactivateByToken(deviceToken);
 	}
 }
