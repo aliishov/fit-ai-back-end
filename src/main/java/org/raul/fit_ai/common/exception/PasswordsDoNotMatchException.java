@@ -4,4 +4,8 @@ public class PasswordsDoNotMatchException extends BaseException {
 	public PasswordsDoNotMatchException(String message) {
 		super(message);
 	}
+
+	public PasswordsDoNotMatchException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }
