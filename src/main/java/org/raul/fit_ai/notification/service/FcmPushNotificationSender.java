@@ -1,5 +1,10 @@
 package org.raul.fit_ai.notification.service;
 
+import org.raul.fit_ai.common.exception.NotificationException;
+import org.raul.fit_ai.notification.client.DeviceTokenClient;
+import org.raul.fit_ai.notification.dto.ResolvedNotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
+
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -7,14 +12,12 @@ import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
 import lombok.extern.slf4j.Slf4j;
-import org.raul.fit_ai.common.exception.NotificationException;
-import org.raul.fit_ai.notification.client.DeviceTokenClient;
-import org.raul.fit_ai.notification.dto.ResolvedNotificationPayload;
-import org.raul.fit_ai.notification.model.enumerated.NotificationChannel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +58,7 @@ public class FcmPushNotificationSender implements NotificationSender {
 			handleResponse(response, tokens, payload.userId());
 		} catch (FirebaseMessagingException e) {
 			log.error("Failed to send push to user=[{}]", payload.userId(), e);
-			throw new NotificationException("Failed to send push notification");
+			throw new NotificationException("Failed to send push notification", e);
 		}
 	}
 

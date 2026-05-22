@@ -1,7 +1,9 @@
 package org.raul.fit_ai.notification.client;
 
-import lombok.RequiredArgsConstructor;
 import org.raul.fit_ai.auth.service.DeviceTokenService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;

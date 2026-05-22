@@ -43,7 +43,7 @@ public class EmailNotificationSender implements NotificationSender {
 			log.info("Email sent to [{}] type=[{}]", payload.recipient(), payload.type());
 		} catch (MessagingException e) {
 			log.error("Failed to send email to [{}]", payload.recipient(), e);
-			throw new NotificationException("Failed to send email");
+			throw new NotificationException("Failed to send email", e);
 		}
 	}
 
