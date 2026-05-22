@@ -4,4 +4,8 @@ public class SmsLimitException extends BaseException {
 	public SmsLimitException(String message) {
 		super(message);
 	}
+
+	public SmsLimitException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

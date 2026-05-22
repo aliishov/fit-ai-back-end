@@ -36,7 +36,7 @@ public class TwilioSmsSender implements NotificationSender {
 					payload.body()).create();
 		} catch (ApiException e) {
 			log.error("Failed to send SMS to [{}]", payload.recipient(), e);
-			throw new NotificationException("Failed to send SMS to " + payload.recipient());
+			throw new NotificationException("Failed to send SMS to " + payload.recipient(), e);
 		}
 
 		smsRateLimitService.validateRateLimit(payload.recipient());

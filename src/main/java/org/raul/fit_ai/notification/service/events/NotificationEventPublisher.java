@@ -88,16 +88,16 @@ public class NotificationEventPublisher {
 		} catch (TimeoutException e) {
 			log.error("Timeout publishing critical notification type=[{}] user=[{}]",
 					payload.type(), payload.userId(), e);
-			throw new NotificationException("Notification service timeout — please try again");
+			throw new NotificationException("Notification service timeout — please try again", e);
 
 		} catch (ExecutionException e) {
 			log.error("Failed to publish critical notification type=[{}] user=[{}]",
 					payload.type(), payload.userId(), e);
-			throw new NotificationException("Failed to queue notification");
+			throw new NotificationException("Failed to queue notification", e);
 
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new NotificationException("Interrupted while sending notification");
+			throw new NotificationException("Interrupted while sending notification", e);
 		}
 	}
 
