@@ -24,8 +24,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "workout_day_exercises", schema = "fitness")
 @Getter
@@ -40,8 +38,8 @@ import java.util.UUID;
 public class WorkoutDayExercise {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	UUID id;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workout_day_id", nullable = false, updatable = false)

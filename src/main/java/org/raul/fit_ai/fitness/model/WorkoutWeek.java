@@ -28,7 +28,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "workout_weeks", schema = "fitness")
@@ -45,8 +44,7 @@ public class WorkoutWeek {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(updatable = false)
-	UUID id;
+	Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workout_plan_id", nullable = false, updatable = false)
