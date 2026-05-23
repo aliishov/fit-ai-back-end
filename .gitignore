@@ -39,3 +39,4 @@ out/
 /src/main/resources/db/migration
 /src/main/resources/application.yaml
 /src/main/resources/fit-ai-a135a-firebase-adminsdk-fbsvc-352f29ec96.json
+/src/main/resources/docker-compose.yml
