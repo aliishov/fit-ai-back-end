@@ -29,7 +29,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "exercises", schema = "fitness")
@@ -45,8 +44,8 @@ import java.util.UUID;
 public class Exercise {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	UUID id;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	Long id;
 
 	@Column(name = "name", nullable = false)
 	String name;
