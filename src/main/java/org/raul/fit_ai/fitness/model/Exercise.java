@@ -12,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -41,6 +42,7 @@ import java.time.OffsetDateTime;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "ex_seq", sequenceName = "fitness.exercises_seq")
 public class Exercise {
 
 	@Id

@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "wde_seq", sequenceName = "fitness.workout_day_exercises_seq")
 public class WorkoutDayExercise {
 
 	@Id

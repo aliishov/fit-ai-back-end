@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -44,6 +45,7 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(name = "wd_seq", sequenceName = "fitness.workout_days_seq")
 public class WorkoutDay {
 
 	@Id
