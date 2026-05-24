@@ -61,7 +61,7 @@ public class UserProfile {
 	BigDecimal weightKg;
 
 	@Column(name = "height_cm", nullable = false)
-	BigDecimal heightCm;
+	Integer heightCm;
 
 	@Column(name = "age", nullable = false)
 	Integer age;

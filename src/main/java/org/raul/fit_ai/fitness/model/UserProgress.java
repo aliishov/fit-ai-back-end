@@ -50,7 +50,7 @@ public class UserProgress {
 	BigDecimal weightKg;
 
 	@Column(name = "height_cm", nullable = false)
-	BigDecimal heightCm;
+	Integer heightCm;
 
 	@Column(name = "notes", columnDefinition = "TEXT")
 	String notes;
