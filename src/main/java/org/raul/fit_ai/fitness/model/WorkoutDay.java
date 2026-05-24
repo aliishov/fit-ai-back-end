@@ -66,5 +66,4 @@ public class WorkoutDay {
 
 	@OneToMany(mappedBy = "workoutDay", cascade = CascadeType.ALL)
 	List<WorkoutDayExercise> exercises = new ArrayList<>();
-
 }

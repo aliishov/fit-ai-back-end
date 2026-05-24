@@ -43,7 +43,7 @@ import java.util.List;
 public class WorkoutWeek {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
