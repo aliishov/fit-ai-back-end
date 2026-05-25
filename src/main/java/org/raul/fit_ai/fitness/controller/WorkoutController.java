@@ -10,8 +10,6 @@ import lombok.experimental.FieldDefaults;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
-import org.raul.fit_ai.fitness.dto.request.ScheduleWorkoutRequestDTO;
-import org.raul.fit_ai.fitness.dto.request.WorkoutGoalRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanResponseDTO;
@@ -59,27 +57,13 @@ public class WorkoutController {
 	}
 
 	@PostMapping("/plan/profile")
-	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> fillProfile(
+	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> createProfile(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ProfileRequestDTO request
 	) {
-		return ResponseEntity.ok().build();
-	}
-
-	@PostMapping("/plan/goal")
-	public ResponseEntity<BaseResponseDTO<Void>> workoutGoals(
-			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestBody @Valid WorkoutGoalRequestDTO request
-	) {
-		return ResponseEntity.ok().build();
-	}
-
-	@PostMapping("/plan/schedule")
-	public ResponseEntity<BaseResponseDTO<Void>> scheduleWorkout(
-			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestBody @Valid ScheduleWorkoutRequestDTO request
-	) {
-		return ResponseEntity.ok().build();
+		ProfileIdResponseDTO response = workoutService.createProfile(principal, request);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success(response, "Profile has been filled"));
 	}
 
 	@PostMapping("/plan/generate")
