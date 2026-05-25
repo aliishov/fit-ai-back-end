@@ -57,11 +57,11 @@ public class WorkoutController {
 	}
 
 	@PostMapping("/plan/profile")
-	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> createProfile(
+	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> fillProfile(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ProfileRequestDTO request
 	) {
-		ProfileIdResponseDTO response = workoutService.createProfile(principal, request);
+		ProfileIdResponseDTO response = workoutService.fillProfile(principal, request);
 		return ResponseEntity
 				.ok(BaseResponseDTO.success(response, "Profile has been filled"));
 	}

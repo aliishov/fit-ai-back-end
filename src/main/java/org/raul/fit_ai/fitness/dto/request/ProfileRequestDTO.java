@@ -16,7 +16,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProfileRequestDTO(
@@ -49,11 +48,6 @@ public record ProfileRequestDTO(
 
 		@NotNull(message = "Sessions per weak is required")
 		Integer sessionsPerWeek,
-
-		@NotNull(message = "Duration weeks is required")
-		Integer durationWeeks,
-
-		LocalDate startsAt,
 
 		@Size(
 				max = 500,

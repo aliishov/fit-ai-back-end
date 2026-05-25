@@ -19,8 +19,8 @@ public class UserProfileMapper {
 				.gender(request.gender())
 				.goal(request.goal())
 				.fitnessLevel(request.fitnessLevel())
-				.sessionsPerWeek()
-				.limitations()
+				.sessionsPerWeek(request.sessionsPerWeek())
+				.limitations(request.limitations())
 				.build();
 	}
 }

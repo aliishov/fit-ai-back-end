@@ -11,6 +11,9 @@ import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +29,11 @@ public class WorkoutService {
 		return userProfileService.existsByUserId(principal.getId());
 	}
 
-	public ProfileIdResponseDTO createProfile(UserPrincipal principal, ProfileRequestDTO request) {
+	@Transactional
+	public ProfileIdResponseDTO fillProfile(UserPrincipal principal, ProfileRequestDTO request) {
 		log.info("Filling profile for principal [{}]", principal.getId());
 
-		// TODO
+		UUID profileId = userProfileService.createProfile(principal.getId(), request);
+		return new ProfileIdResponseDTO(profileId);
 	}
 }
