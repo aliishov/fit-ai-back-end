@@ -1,5 +1,7 @@
 package org.raul.fit_ai.fitness.dto.request;
 
+import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
+import org.raul.fit_ai.fitness.model.enumerated.FitnessGoal;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.model.enumerated.Gender;
 
@@ -17,6 +19,8 @@ import java.math.BigDecimal;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProfileRequestDTO(
+
+		ActivityType activityType,
 
 		@DecimalMin(value = "20.0", message = "Weight must be at least 20 kg")
 		@DecimalMax(value = "300.0", message = "Weight must not exceed 300 kg")
@@ -37,8 +41,13 @@ public record ProfileRequestDTO(
 
 		Gender gender,
 
+		FitnessGoal goal,
+
 		@NotNull(message = "Fitness level is required")
 		FitnessLevel fitnessLevel,
+
+		@NotNull(message = "Sessions per weak is required")
+		Integer sessionsPerWeek,
 
 		@Size(
 				max = 500,
