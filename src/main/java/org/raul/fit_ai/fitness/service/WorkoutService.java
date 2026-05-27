@@ -8,8 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.fitness.client.AppUserClient;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
+import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
+import org.raul.fit_ai.fitness.mapper.WorkoutPlanMapper;
 import org.raul.fit_ai.fitness.model.UserProfile;
+import org.raul.fit_ai.fitness.model.WorkoutPlan;
+import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
+import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,19 +27,33 @@ import java.util.UUID;
 @Slf4j
 public class WorkoutService {
 
-	AppUserClient appUserClient;
 	UserProfileService userProfileService;
+	WorkoutPlanRepository workoutPlanRepository;
+	WorkoutPlanMapper workoutPlanMapper;
+	WorkoutPlanGenerationService workoutPlanGenerationService;
 
-	public boolean initWorkout(UserPrincipal principal) {
-		log.info("Checking workout for principal [{}]", principal.getId());
-		return userProfileService.existsByUserId(principal.getId());
+	public InitResponseDTO initWorkout(UserPrincipal principal) {
+		log.info("Checking workout init for user [{}]", principal.getId());
+
+		boolean hasProfile = userProfileService.existsByUserId(principal.getId());
+		boolean hasActivePlan = workoutPlanRepository.existsByUserIdAndStatus(principal.getId(), PlanStatus.ACTIVE);
+
+		return new InitResponseDTO(hasProfile, hasActivePlan);
 	}
 
 	@Transactional
-	public ProfileIdResponseDTO fillProfile(UserPrincipal principal, ProfileRequestDTO request) {
-		log.info("Filling profile for principal [{}]", principal.getId());
+	public PlanIdResponseDTO generateWorkout(UserPrincipal principal, ProfileRequestDTO request) {
+		log.info("Generating workout plan for user [{}]", principal.getId());
 
-		UUID profileId = userProfileService.createProfile(principal.getId(), request);
-		return new ProfileIdResponseDTO(profileId);
+		userProfileService.createOrUpdateProfile(principal.getId(), request);
+
+		WorkoutPlan plan = workoutPlanMapper.toEntity(principal.getId(), request);
+
+		plan = workoutPlanRepository.save(plan);
+
+		workoutPlanGenerationService.generateAsync(plan.getId(), principal.getId(), request);
+
+		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), principal.getId());
+		return new PlanIdResponseDTO(plan.getId());
 	}
 }

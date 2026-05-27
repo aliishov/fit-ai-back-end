@@ -1,5 +1,9 @@
 package org.raul.fit_ai.fitness.model.enumerated;
 
 public enum PlanStatus {
-	GENERATING, ACTIVE, COMPLETED, CANCELLED
+	GENERATING,
+	ACTIVE,
+	COMPLETED,
+	CANCELLED,
+	NEEDS_REVIEW
 }

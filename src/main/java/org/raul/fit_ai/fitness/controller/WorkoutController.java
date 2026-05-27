@@ -44,33 +44,19 @@ public class WorkoutController {
 	public ResponseEntity<BaseResponseDTO<InitResponseDTO>> initWorkout(
 			@AuthenticationPrincipal UserPrincipal principal
 	) {
-		boolean isReady = workoutService.initWorkout(principal);
-
-		if (!isReady) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-					.body(BaseResponseDTO.error("PROFILE_REQUIRED",
-							Map.of("profile", List.of("Complete your profile to continue"))));
-		}
-
-		return ResponseEntity.ok(BaseResponseDTO.success(new InitResponseDTO(true)));
-	}
-
-	@PostMapping("/plan/profile")
-	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> fillProfile(
-			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestBody @Valid ProfileRequestDTO request
-	) {
-		ProfileIdResponseDTO response = workoutService.fillProfile(principal, request);
-		return ResponseEntity
-				.ok(BaseResponseDTO.success(response, "Profile has been filled"));
+		InitResponseDTO response = workoutService.initWorkout(principal);
+		return ResponseEntity.ok(BaseResponseDTO.success(response));
 	}
 
 	@PostMapping("/plan/generate")
 	public ResponseEntity<BaseResponseDTO<PlanIdResponseDTO>> generateWorkout(
-			@AuthenticationPrincipal UserPrincipal principal
+			@AuthenticationPrincipal UserPrincipal principal,
+			@RequestBody @Valid ProfileRequestDTO request
 	) {
-		return ResponseEntity.ok().build();
+		PlanIdResponseDTO response = workoutService.generateWorkout(principal, request);
+		return ResponseEntity
+				.accepted()
+				.body(BaseResponseDTO.success(response, "Plan generation started"));
 	}
 
 	@PostMapping("/plan/{planId}")
