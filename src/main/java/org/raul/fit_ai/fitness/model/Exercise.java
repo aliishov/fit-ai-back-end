@@ -52,7 +52,7 @@ public class Exercise {
 	@Column(name = "name", nullable = false)
 	String name;
 
-	@Column(name = "description", columnDefinition = "TEXT")
+	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
 	String description;
 
 	@Enumerated(EnumType.STRING)
