@@ -30,6 +30,7 @@ public class WorkoutService {
 	UserProfileService userProfileService;
 	WorkoutPlanRepository workoutPlanRepository;
 	WorkoutPlanMapper workoutPlanMapper;
+	WorkoutPlanGenerationService workoutPlanGenerationService;
 
 	public InitResponseDTO initWorkout(UserPrincipal principal) {
 		log.info("Checking workout init for user [{}]", principal.getId());
@@ -50,7 +51,7 @@ public class WorkoutService {
 
 		plan = workoutPlanRepository.save(plan);
 
-		// TODO workoutPlanGenerationService.generateAsync(plan.getId(), principal.getId(), request);
+		workoutPlanGenerationService.generateAsync(plan.getId(), principal.getId(), request);
 
 		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), principal.getId());
 		return new PlanIdResponseDTO(plan.getId());
