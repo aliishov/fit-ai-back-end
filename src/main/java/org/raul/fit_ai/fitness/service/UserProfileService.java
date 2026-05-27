@@ -31,7 +31,7 @@ public class UserProfileService {
 	}
 
 	@Transactional
-	public UUID createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
+	public void createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
 		log.info("Creating or updating profile for user [{}]", userId);
 
 		UserProfile profile = userProfileRepository.findByUserId(userId)
@@ -43,8 +43,7 @@ public class UserProfileService {
 						userProfileMapper.toEntity(request, userId)
 				);
 
-		profile = userProfileRepository.save(profile);
-		return profile.getId();
+		userProfileRepository.save(profile);
 	}
 
 	private void updateProfile(UserProfile profile, ProfileRequestDTO request) {

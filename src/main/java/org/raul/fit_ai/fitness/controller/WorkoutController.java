@@ -48,21 +48,15 @@ public class WorkoutController {
 		return ResponseEntity.ok(BaseResponseDTO.success(response));
 	}
 
-	@PostMapping("/plan/profile")
-	public ResponseEntity<BaseResponseDTO<ProfileIdResponseDTO>> fillProfile(
+	@PostMapping("/plan/generate")
+	public ResponseEntity<BaseResponseDTO<PlanIdResponseDTO>> generateWorkout(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ProfileRequestDTO request
 	) {
-		ProfileIdResponseDTO response = workoutService.fillProfile(principal, request);
+		PlanIdResponseDTO response = workoutService.generateWorkout(principal, request);
 		return ResponseEntity
-				.ok(BaseResponseDTO.success(response, "Profile has been filled"));
-	}
-
-	@PostMapping("/plan/generate")
-	public ResponseEntity<BaseResponseDTO<PlanIdResponseDTO>> generateWorkout(
-			@AuthenticationPrincipal UserPrincipal principal
-	) {
-		return ResponseEntity.ok().build();
+				.accepted()
+				.body(BaseResponseDTO.success(response, "Plan generation started"));
 	}
 
 	@PostMapping("/plan/{planId}")

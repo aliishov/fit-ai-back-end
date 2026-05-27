@@ -1,5 +1,6 @@
 package org.raul.fit_ai.fitness.dto.request;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessGoal;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
@@ -16,6 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProfileRequestDTO(
@@ -39,15 +41,28 @@ public record ProfileRequestDTO(
 		@Max(value = 120, message = "Age must not exceed 120")
 		Integer age,
 
+		@NotNull(message = "Gender is required")
 		Gender gender,
 
+		@NotNull(message = "Goal is required")
 		FitnessGoal goal,
 
 		@NotNull(message = "Fitness level is required")
 		FitnessLevel fitnessLevel,
 
 		@NotNull(message = "Sessions per weak is required")
+		@Min(1)
+		@Max(7)
 		Integer sessionsPerWeek,
+
+		@NotNull
+		@Min(1)
+		@Max(52)
+		Integer durationWeeks,
+
+		@NotNull
+		@FutureOrPresent
+		LocalDate startsAt,
 
 		@Size(
 				max = 500,
