@@ -44,16 +44,8 @@ public class WorkoutController {
 	public ResponseEntity<BaseResponseDTO<InitResponseDTO>> initWorkout(
 			@AuthenticationPrincipal UserPrincipal principal
 	) {
-		boolean isReady = workoutService.initWorkout(principal);
-
-		if (!isReady) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-					.body(BaseResponseDTO.error("PROFILE_REQUIRED",
-							Map.of("profile", List.of("Complete your profile to continue"))));
-		}
-
-		return ResponseEntity.ok(BaseResponseDTO.success(new InitResponseDTO(true)));
+		InitResponseDTO response = workoutService.initWorkout(principal);
+		return ResponseEntity.ok(BaseResponseDTO.success(response));
 	}
 
 	@PostMapping("/plan/profile")

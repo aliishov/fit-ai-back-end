@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.fitness.client.AppUserClient;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.springframework.stereotype.Service;
@@ -21,19 +22,23 @@ import java.util.UUID;
 @Slf4j
 public class WorkoutService {
 
-	AppUserClient appUserClient;
 	UserProfileService userProfileService;
+	WorkoutPlanService workoutPlanService;
 
-	public boolean initWorkout(UserPrincipal principal) {
-		log.info("Checking workout for principal [{}]", principal.getId());
-		return userProfileService.existsByUserId(principal.getId());
+	public InitResponseDTO initWorkout(UserPrincipal principal) {
+		log.info("Checking workout init for user [{}]", principal.getId());
+
+		boolean hasProfile = userProfileService.existsByUserId(principal.getId());
+		boolean hasActivePlan = workoutPlanService.hasActivePlan(principal.getId());
+
+		return new InitResponseDTO(hasProfile, hasActivePlan);
 	}
 
 	@Transactional
 	public ProfileIdResponseDTO fillProfile(UserPrincipal principal, ProfileRequestDTO request) {
 		log.info("Filling profile for principal [{}]", principal.getId());
 
-		UUID profileId = userProfileService.createProfile(principal.getId(), request);
+		UUID profileId = userProfileService.createOrUpdateProfile(principal.getId(), request);
 		return new ProfileIdResponseDTO(profileId);
 	}
 }

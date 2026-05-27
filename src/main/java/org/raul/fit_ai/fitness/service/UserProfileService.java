@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.mapper.UserProfileMapper;
 import org.raul.fit_ai.fitness.model.UserProfile;
+import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,6 @@ public class UserProfileService {
 	UserProfileRepository userProfileRepository;
 	UserProfileMapper userProfileMapper;
 
-	public UserProfile findUserProfileByUserId(UUID userId) {
-		return userProfileRepository.findByUserId(userId)
-				.orElseThrow(() -> new EntityNotFoundException("UserProfile not found"));
-	}
-
 	@Transactional(readOnly = true)
 	public boolean existsByUserId(UUID userId) {
 		log.info("Checking if profile exists by user id [{}]", userId);
@@ -35,30 +31,31 @@ public class UserProfileService {
 	}
 
 	@Transactional
-	public UUID createProfile(UUID userId, ProfileRequestDTO request) {
-		log.info("Creating profile for principal [{}]", userId);
+	public UUID createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
+		log.info("Creating or updating profile for user [{}]", userId);
 
-		UserProfile profile;
-		if (userProfileRepository.existsByUserId(userId)) {
-			profile = userProfileMapper.toEntity(request, userId);
-		} else {
-			profile = findUserProfileByUserId(userId);
-			updateProfile(profile, request);
-		}
+		UserProfile profile = userProfileRepository.findByUserId(userId)
+				.map(existing -> {
+					updateProfile(existing, request);
+					return existing;
+				})
+				.orElseGet(() ->
+						userProfileMapper.toEntity(request, userId)
+				);
 
 		profile = userProfileRepository.save(profile);
 		return profile.getId();
 	}
 
 	private void updateProfile(UserProfile profile, ProfileRequestDTO request) {
-		profile.setActivityType(request.activityType());
-		profile.setWeightKg(request.weightKg());
-		profile.setHeightCm(request.heightCm());
-		profile.setAge(request.age());
-		profile.setGender(request.gender());
-		profile.setGoal(request.goal());
-		profile.setFitnessLevel(request.fitnessLevel());
-		profile.setSessionsPerWeek(request.sessionsPerWeek());
-		profile.setLimitations(request.limitations());
+		if (request.activityType() != null) profile.setActivityType(request.activityType());
+		if (request.weightKg() != null) profile.setWeightKg(request.weightKg());
+		if (request.heightCm() != null) profile.setHeightCm(request.heightCm());
+		if (request.age() != null) profile.setAge(request.age());
+		if (request.gender() != null) profile.setGender(request.gender());
+		if (request.goal() != null) profile.setGoal(request.goal());
+		if (request.fitnessLevel() != null) profile.setFitnessLevel(request.fitnessLevel());
+		if (request.sessionsPerWeek() != null) profile.setSessionsPerWeek(request.sessionsPerWeek());
+		if (request.limitations() != null) profile.setLimitations(request.limitations());
 	}
 }
