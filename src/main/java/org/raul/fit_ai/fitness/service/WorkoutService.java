@@ -11,6 +11,7 @@ import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
+import org.raul.fit_ai.fitness.mapper.WorkoutPlanMapper;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
@@ -28,6 +29,7 @@ public class WorkoutService {
 
 	UserProfileService userProfileService;
 	WorkoutPlanRepository workoutPlanRepository;
+	WorkoutPlanMapper workoutPlanMapper;
 
 	public InitResponseDTO initWorkout(UserPrincipal principal) {
 		log.info("Checking workout init for user [{}]", principal.getId());
@@ -44,6 +46,13 @@ public class WorkoutService {
 
 		userProfileService.createOrUpdateProfile(principal.getId(), request);
 
-		// TODO
+		WorkoutPlan plan = workoutPlanMapper.toEntity(principal.getId(), request);
+
+		plan = workoutPlanRepository.save(plan);
+
+		// TODO workoutPlanGenerationService.generateAsync(plan.getId(), principal.getId(), request);
+
+		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), principal.getId());
+		return new PlanIdResponseDTO(plan.getId());
 	}
 }
