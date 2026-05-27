@@ -10,6 +10,7 @@ import org.raul.fit_ai.common.dto.BaseResponseDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseRequestDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseUpdateRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ExerciseResponseDTO;
+import org.raul.fit_ai.fitness.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -31,10 +32,11 @@ import java.util.List;
 @Validated
 public class ExerciseController {
 
+	ExerciseService exerciseService;
+
 	@PostMapping
 	@AdminUser
 	public ResponseEntity<BaseResponseDTO<Void>> createExercise(
-			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ExerciseRequestDTO request
 	) {
 		return ResponseEntity
@@ -58,10 +60,10 @@ public class ExerciseController {
 				.build();
 	}
 
-	@PatchMapping
+	@PatchMapping("/{exerciseId}")
 	@AdminUser
 	public ResponseEntity<BaseResponseDTO<ExerciseResponseDTO>> updateExercise(
-			@AuthenticationPrincipal UserPrincipal principal,
+			@PathVariable Long exerciseId,
 			@RequestBody @Valid ExerciseUpdateRequestDTO request
 	) {
 		return ResponseEntity
@@ -72,7 +74,6 @@ public class ExerciseController {
 	@DeleteMapping("/{exerciseId}")
 	@AdminUser
 	public ResponseEntity<BaseResponseDTO<Void>> deleteExercise(
-			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable Long exerciseId
 	) {
 		return ResponseEntity
