@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -39,25 +40,26 @@ public class ExerciseController {
 	public ResponseEntity<BaseResponseDTO<Void>> createExercise(
 			@RequestBody @Valid ExerciseRequestDTO request
 	) {
+		URI data = exerciseService.createExercise(request);
 		return ResponseEntity
-				.created()
-				.build();
+				.created(data)
+				.body(BaseResponseDTO.success("Exercise created successfully"));
 	}
 
 	@GetMapping
 	public ResponseEntity<BaseResponseDTO<List<ExerciseResponseDTO>>> getExercises() {
+		List<ExerciseResponseDTO> data = exerciseService.getExercises();
 		return ResponseEntity
-				.ok()
-				.build();
+				.ok(BaseResponseDTO.success(data, "Exercises fetched successfully"));
 	}
 
 	@GetMapping("/{exerciseId}")
 	public ResponseEntity<BaseResponseDTO<ExerciseResponseDTO>> getExercise(
 			@PathVariable Long exerciseId
 	) {
+		ExerciseResponseDTO data = exerciseService.getExercise(exerciseId);
 		return ResponseEntity
-				.ok()
-				.build();
+				.ok(BaseResponseDTO.success(data, "Exercise fetched successfully"));
 	}
 
 	@PatchMapping("/{exerciseId}")
@@ -66,16 +68,17 @@ public class ExerciseController {
 			@PathVariable Long exerciseId,
 			@RequestBody @Valid ExerciseUpdateRequestDTO request
 	) {
+		ExerciseResponseDTO data = exerciseService.updateExercise(exerciseId, request);
 		return ResponseEntity
-				.ok()
-				.build();
+				.ok(BaseResponseDTO.success(data, "Exercise updated successfully"));
 	}
 
 	@DeleteMapping("/{exerciseId}")
 	@AdminUser
-	public ResponseEntity<BaseResponseDTO<Void>> deleteExercise(
+	public ResponseEntity<Void> deleteExercise(
 			@PathVariable Long exerciseId
 	) {
+		exerciseService.deleteExercise(exerciseId);
 		return ResponseEntity
 				.noContent()
 				.build();
