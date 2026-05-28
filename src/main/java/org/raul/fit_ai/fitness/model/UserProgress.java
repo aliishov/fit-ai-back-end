@@ -55,6 +55,9 @@ public class UserProgress {
 	@Column(name = "notes", columnDefinition = "TEXT")
 	String notes;
 
+	@Column(name = "plan_id")
+	UUID planId;
+
 	@CreatedDate
 	@Column(name = "recorded_at", updatable = false)
 	OffsetDateTime recordedAt;

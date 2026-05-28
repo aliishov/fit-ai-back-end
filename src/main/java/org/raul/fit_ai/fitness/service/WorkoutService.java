@@ -1,6 +1,7 @@
 package org.raul.fit_ai.fitness.service;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -55,5 +56,13 @@ public class WorkoutService {
 
 		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), principal.getId());
 		return new PlanIdResponseDTO(plan.getId());
+	}
+
+	protected boolean existsById(UUID planId) {
+		return workoutPlanRepository.existsById(planId);
+	}
+
+	protected boolean isPLanActive(UUID planId) {
+		return workoutPlanRepository.existsByIdAndStatus(planId, PlanStatus.ACTIVE);
 	}
 }

@@ -19,4 +19,6 @@ public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlan, UUID> 
 	@Query("UPDATE WorkoutPlan wp SET wp.status = :status WHERE wp.id = :planId")
 	void updateStatus(@Param("planId") UUID planId,
 	                  @Param("status") PlanStatus status);
+
+	boolean existsByIdAndStatus(UUID id, PlanStatus status);
 }
