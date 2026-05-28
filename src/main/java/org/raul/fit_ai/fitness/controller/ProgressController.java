@@ -9,6 +9,7 @@ import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressReponseDTO;
+import org.raul.fit_ai.fitness.service.ProgressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +30,8 @@ import java.util.UUID;
 @Validated
 @AppUser
 public class ProgressController {
+
+	ProgressService progressService;
 
 	@PostMapping
 	public ResponseEntity<BaseResponseDTO<Void>> recordProgress(
