@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-public record ProgressReponseDTO(
+public record ProgressResponseDTO(
 		UUID id,
 		UUID userId,
 		BigDecimal weightKg,

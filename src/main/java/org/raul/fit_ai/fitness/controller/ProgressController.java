@@ -8,7 +8,7 @@ import org.raul.fit_ai.auth.annotation.AppUser;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
-import org.raul.fit_ai.fitness.dto.response.ProgressReponseDTO;
+import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.service.ProgressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,11 +44,11 @@ public class ProgressController {
 	}
 
 	@GetMapping("/{planId}")
-	public ResponseEntity<BaseResponseDTO<List<ProgressReponseDTO>>> getProgress(
+	public ResponseEntity<BaseResponseDTO<List<ProgressResponseDTO>>> getProgress(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable UUID planId
 	) {
-		List<ProgressReponseDTO> data = progressService.getProgress(principal, planId);
+		List<ProgressResponseDTO> data = progressService.getProgress(principal, planId);
 		return ResponseEntity
 				.ok(BaseResponseDTO.success(data, "Progress fetched successfully"));
 	}
