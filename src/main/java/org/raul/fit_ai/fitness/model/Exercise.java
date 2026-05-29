@@ -42,14 +42,14 @@ import java.time.OffsetDateTime;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@SequenceGenerator(name = "ex_seq", sequenceName = "fitness.exercises_seq")
+@SequenceGenerator(name = "ex_seq", sequenceName = "fitness.exercises_seq", allocationSize = 50)
 public class Exercise {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ex_seq")
 	Long id;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, length = 50)
 	String name;
 
 	@Column(name = "description", columnDefinition = "TEXT", nullable = false)
@@ -67,10 +67,10 @@ public class Exercise {
 	@Column(name = "difficulty", nullable = false)
 	FitnessLevel difficulty;
 
-	@Column(name = "equipment_needed")
+	@Column(name = "equipment_needed", length = 255)
 	String equipmentNeeded;
 
 	@CreatedDate
-	@Column(name = "created_at", updatable = false)
+	@Column(name = "created_at", nullable = false, updatable = false)
 	OffsetDateTime createdAt;
 }

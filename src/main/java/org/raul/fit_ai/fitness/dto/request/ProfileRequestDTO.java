@@ -1,12 +1,9 @@
 package org.raul.fit_ai.fitness.dto.request;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessGoal;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.model.enumerated.Gender;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -17,13 +14,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProfileRequestDTO(
 
+		@NotNull(message = "Activity type is required")
 		ActivityType activityType,
 
+		@NotNull(message = "Weight is required")
 		@DecimalMin(value = "20.0", message = "Weight must be at least 20 kg")
 		@DecimalMax(value = "300.0", message = "Weight must not exceed 300 kg")
 		@Digits(
@@ -33,10 +30,12 @@ public record ProfileRequestDTO(
 		)
 		BigDecimal weightKg,
 
+		@NotNull(message = "Height is required")
 		@Min(value = 50, message = "Height must be at least 50 cm")
 		@Max(value = 250, message = "Height must not exceed 250 cm")
 		Integer heightCm,
 
+		@NotNull(message = "Age is required")
 		@Min(value = 10, message = "Age must be at least 10")
 		@Max(value = 120, message = "Age must not exceed 120")
 		Integer age,
@@ -50,19 +49,10 @@ public record ProfileRequestDTO(
 		@NotNull(message = "Fitness level is required")
 		FitnessLevel fitnessLevel,
 
-		@NotNull(message = "Sessions per weak is required")
+		@NotNull(message = "Sessions per week is required")
 		@Min(1)
 		@Max(7)
 		Integer sessionsPerWeek,
-
-		@NotNull
-		@Min(1)
-		@Max(52)
-		Integer durationWeeks,
-
-		@NotNull
-		@FutureOrPresent
-		LocalDate startsAt,
 
 		@Size(
 				max = 500,

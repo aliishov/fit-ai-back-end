@@ -1,11 +1,12 @@
 package org.raul.fit_ai.fitness.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.model.enumerated.MuscleGroup;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record ExerciseRequestDTO(
 
@@ -24,15 +25,19 @@ public record ExerciseRequestDTO(
 		)
 		String description,
 
-		@NotNull
+		@NotNull(message = "Activity type is required")
 		ActivityType activityType,
 
-		@NotNull
+		@NotNull(message = "Muscle group is required")
 		MuscleGroup muscleGroup,
 
-		@NotNull
+		@NotNull(message = "Difficulty is required")
 		FitnessLevel difficulty,
 
+		@Size(
+				max = 255,
+				message = "Equipment needed should not exceed 255 characters"
+		)
 		String equipmentNeeded
 ) {
 }

@@ -1,21 +1,20 @@
 package org.raul.fit_ai.fitness.controller;
 
-import jakarta.validation.Valid;
 import org.raul.fit_ai.auth.annotation.AppUser;
+import org.raul.fit_ai.auth.model.UserPrincipal;
+import org.raul.fit_ai.common.dto.BaseResponseDTO;
+import org.raul.fit_ai.fitness.dto.request.GenerateWorkoutRequestDTO;
+import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
+import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
+import org.raul.fit_ai.fitness.dto.response.PlanResponseDTO;
+import org.raul.fit_ai.fitness.service.WorkoutService;
+
+import jakarta.validation.Valid;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import org.raul.fit_ai.auth.model.UserPrincipal;
-import org.raul.fit_ai.common.dto.BaseResponseDTO;
-import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
-import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
-import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
-import org.raul.fit_ai.fitness.dto.response.PlanResponseDTO;
-import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
-import org.raul.fit_ai.fitness.service.WorkoutService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -44,26 +41,27 @@ public class WorkoutController {
 	public ResponseEntity<BaseResponseDTO<InitResponseDTO>> initWorkout(
 			@AuthenticationPrincipal UserPrincipal principal
 	) {
-		InitResponseDTO response = workoutService.initWorkout(principal);
-		return ResponseEntity.ok(BaseResponseDTO.success(response));
+		InitResponseDTO data = workoutService.initWorkout(principal);
+		return ResponseEntity.ok(BaseResponseDTO.success(data));
 	}
 
 	@PostMapping("/plan/generate")
 	public ResponseEntity<BaseResponseDTO<PlanIdResponseDTO>> generateWorkout(
 			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestBody @Valid ProfileRequestDTO request
+			@RequestBody @Valid GenerateWorkoutRequestDTO request
 	) {
-		PlanIdResponseDTO response = workoutService.generateWorkout(principal, request);
+		PlanIdResponseDTO data = workoutService.generateWorkout(principal, request);
 		return ResponseEntity
 				.accepted()
-				.body(BaseResponseDTO.success(response, "Plan generation started"));
+				.body(BaseResponseDTO.success(data, "Plan generation started"));
 	}
 
-	@PostMapping("/plan/{planId}")
+	@GetMapping("/plan/{planId}")
 	public ResponseEntity<BaseResponseDTO<PlanResponseDTO>> getPlan(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable @Valid UUID planId
 	) {
-		return ResponseEntity.ok().build();
+		PlanResponseDTO data = workoutService.getPlan(principal, planId);
+		return ResponseEntity.ok(BaseResponseDTO.success(data));
 	}
 }

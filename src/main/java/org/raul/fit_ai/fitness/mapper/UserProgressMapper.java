@@ -1,26 +1,21 @@
 package org.raul.fit_ai.fitness.mapper;
 
-import lombok.experimental.UtilityClass;
-import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.model.UserProgress;
-import org.springframework.stereotype.Component;
+import org.raul.fit_ai.fitness.validator.ProgressValidator.NormalizedProgressRecord;
 
-import java.time.OffsetDateTime;
-import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
-@Component
 @UtilityClass
 public class UserProgressMapper {
 
-	public static UserProgress toEntity(RecordProgressRequestDTO request, UUID userId) {
+	public static UserProgress toEntity(NormalizedProgressRecord request) {
 		return UserProgress.builder()
-				.userId(userId)
+				.userId(request.userId())
 				.weightKg(request.weightKg())
 				.heightCm(request.heightCm())
 				.notes(request.notes())
 				.planId(request.planId())
-				.recordedAt(OffsetDateTime.now())
 				.build();
 	}
 

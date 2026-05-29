@@ -1,4 +1,4 @@
-package org.raul.fit_ai.fitness.client;
+package org.raul.fit_ai.common.services;
 
 import org.raul.fit_ai.notification.service.events.NotificationEventPublisher;
 import org.raul.fit_ai.notification.dto.NotificationPayload;

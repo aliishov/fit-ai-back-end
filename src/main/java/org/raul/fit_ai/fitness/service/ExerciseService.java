@@ -1,20 +1,21 @@
 package org.raul.fit_ai.fitness.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
 import org.raul.fit_ai.fitness.dto.request.ExerciseRequestDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseUpdateRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ExerciseResponseDTO;
 import org.raul.fit_ai.fitness.mapper.ExerciseMapper;
 import org.raul.fit_ai.fitness.model.Exercise;
-import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
-import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.repository.ExerciseRepository;
+import org.raul.fit_ai.fitness.validator.ExerciseValidator;
+import org.raul.fit_ai.fitness.validator.ExerciseValidator.NormalizedExerciseUpdate;
+
+import jakarta.persistence.EntityNotFoundException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,27 +24,25 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@Transactional(readOnly = true)
 public class ExerciseService {
 
-	ExerciseRepository exerciseRepository;
+	private final ExerciseRepository exerciseRepository;
+	private final ExerciseValidator exerciseValidator;
 
 	@Transactional
 	public URI createExercise(ExerciseRequestDTO request) {
-		log.info("Creating new exercise with name: {}", request.name());
+		ExerciseRequestDTO normalizedRequest = exerciseValidator.validateAndNormalizeCreateRequest(request);
+		log.info("Creating new exercise with name: {}", normalizedRequest.name());
 
-		if (exerciseRepository.existsByName(request.name())) {
-			throw new DuplicateResourceException("An exercise with this name already exists");
-		}
-
-		Exercise exercise = ExerciseMapper.toEntity(request);
+		Exercise exercise = ExerciseMapper.toEntity(normalizedRequest);
+		exercise = saveAndFlushExercise(exercise);
 
 		log.info("Successfully created exercise [{}]", exercise.getId());
-		return URI.create("/api/v1/exercise/" + exercise.getId());
+		return URI.create("/api/v1/exercises/" + exercise.getId());
 	}
 
-	@Transactional(readOnly = true)
 	public List<ExerciseResponseDTO> getExercises() {
 		log.info("Retrieving all exercises from database");
 
@@ -54,31 +53,24 @@ public class ExerciseService {
 				.toList();
 	}
 
-	@Transactional(readOnly = true)
 	public ExerciseResponseDTO getExercise(Long exerciseId) {
 		log.info("Retrieving exercise with ID [{}]", exerciseId);
 
-		Exercise exercise = exerciseRepository.findById(exerciseId)
-				.orElseThrow(() -> new EntityNotFoundException("Exercise with ID [" + exerciseId + "] not found"));
-
-		return ExerciseMapper.toResponseDto(exercise);
+		return ExerciseMapper.toResponseDto(findExercise(exerciseId));
 	}
 
 	@Transactional
 	public ExerciseResponseDTO updateExercise(Long exerciseId, ExerciseUpdateRequestDTO request) {
-		log.info("Updating exercise with name: {}", request.name());
+		log.info("Updating exercise with ID [{}]", exerciseId);
 
-		Exercise exercise = exerciseRepository.findById(exerciseId)
-				.orElseThrow(() -> new EntityNotFoundException("Exercise with ID [" + exerciseId + "] not found"));
+		Exercise exercise = findExercise(exerciseId);
+		NormalizedExerciseUpdate normalizedRequest = exerciseValidator.validateAndNormalizeUpdateRequest(
+				request,
+				exerciseId
+		);
+		applyUpdates(exercise, normalizedRequest);
 
-		if (!request.name().isEmpty()) exercise.setName(request.name());
-		if (!request.description().isEmpty()) exercise.setDescription(request.description());
-		if (request.activityType() != null) exercise.setActivityType(request.activityType());
-		if (request.muscleGroup()!= null) exercise.setMuscleGroup(request.muscleGroup());
-		if (request.difficulty() != null) exercise.setDifficulty(request.difficulty());
-		if (!request.equipmentNeeded().isEmpty()) exercise.setEquipmentNeeded(request.equipmentNeeded());
-
-		exercise = exerciseRepository.save(exercise);
+		exercise = saveAndFlushExercise(exercise);
 
 		log.info("Successfully updated exercise [{}]", exercise.getId());
 		return ExerciseMapper.toResponseDto(exercise);
@@ -87,15 +79,54 @@ public class ExerciseService {
 	@Transactional
 	public void deleteExercise(Long exerciseId) {
 		log.info("Deleting exercise with ID [{}]", exerciseId);
+
+		exerciseValidator.validateExerciseId(exerciseId);
+		if (!exerciseRepository.existsById(exerciseId)) {
+			throw exerciseNotFound(exerciseId);
+		}
+
 		exerciseRepository.deleteById(exerciseId);
 	}
 
-	public Exercise getReferenceById(Long id) {
-		return exerciseRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Exercise with ID [" + id + "] not found"));
+	private void applyUpdates(Exercise exercise, NormalizedExerciseUpdate request) {
+		if (request.name() != null) {
+			exercise.setName(request.name());
+		}
+		if (request.description() != null) {
+			exercise.setDescription(request.description());
+		}
+		if (request.activityType() != null) {
+			exercise.setActivityType(request.activityType());
+		}
+		if (request.muscleGroup() != null) {
+			exercise.setMuscleGroup(request.muscleGroup());
+		}
+		if (request.difficulty() != null) {
+			exercise.setDifficulty(request.difficulty());
+		}
+		if (request.equipmentNeededProvided()) {
+			exercise.setEquipmentNeeded(request.equipmentNeeded());
+		}
 	}
 
-	public List<Exercise> findByActivityTypeAndDifficulty(ActivityType activityType, FitnessLevel fitnessLevel) {
-		return exerciseRepository.findByActivityTypeAndDifficulty(activityType, fitnessLevel);
+	private Exercise findExercise(Long exerciseId) {
+		exerciseValidator.validateExerciseId(exerciseId);
+		return exerciseRepository.findById(exerciseId)
+				.orElseThrow(() -> exerciseNotFound(exerciseId));
+	}
+
+	private EntityNotFoundException exerciseNotFound(Long exerciseId) {
+		return new EntityNotFoundException("Exercise with ID [" + exerciseId + "] not found");
+	}
+
+	private Exercise saveAndFlushExercise(Exercise exercise) {
+		try {
+			return exerciseRepository.saveAndFlush(exercise);
+		} catch (DataIntegrityViolationException ex) {
+			if (exerciseValidator.isExerciseNameUniqueViolation(ex)) {
+				throw new DuplicateResourceException(ExerciseValidator.EXERCISE_NAME_DUPLICATE_MESSAGE, ex);
+			}
+			throw ex;
+		}
 	}
 }

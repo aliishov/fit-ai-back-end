@@ -1,18 +1,19 @@
 package org.raul.fit_ai.fitness.controller;
 
-import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.raul.fit_ai.auth.annotation.AdminUser;
-import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseRequestDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseUpdateRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ExerciseResponseDTO;
 import org.raul.fit_ai.fitness.service.ExerciseService;
+
+import jakarta.validation.Valid;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,8 +80,6 @@ public class ExerciseController {
 			@PathVariable Long exerciseId
 	) {
 		exerciseService.deleteExercise(exerciseId);
-		return ResponseEntity
-				.noContent()
-				.build();
+		return ResponseEntity.noContent().build();
 	}
 }

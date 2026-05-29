@@ -11,6 +11,7 @@ import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.AdminUserRepository;
 import org.raul.fit_ai.auth.repository.AppUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
+import org.raul.fit_ai.common.services.NotificationPublisher;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 

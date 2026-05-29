@@ -7,6 +7,7 @@ import org.raul.fit_ai.auth.repository.AdminUserRepository;
 import org.raul.fit_ai.auth.service.jwt.JwtManager;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
 import org.raul.fit_ai.common.exception.UnauthorizedException;
+import org.raul.fit_ai.common.services.NotificationPublisher;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import lombok.AccessLevel;
