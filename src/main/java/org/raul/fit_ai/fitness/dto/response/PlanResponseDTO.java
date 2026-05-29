@@ -15,6 +15,5 @@ public record PlanResponseDTO(
 		Integer sessionsPerWeek,
 		LocalDate startsAt,
 		LocalDate endsAt
-		// TODO
 ) {
 }

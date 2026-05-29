@@ -1,9 +1,11 @@
 package org.raul.fit_ai.fitness.mapper;
 
-import lombok.experimental.UtilityClass;
 import org.raul.fit_ai.fitness.dto.request.ExerciseRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ExerciseResponseDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
+
+import lombok.experimental.UtilityClass;
+
 import org.springframework.stereotype.Component;
 
 @Component

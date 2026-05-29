@@ -1,9 +1,10 @@
 package org.raul.fit_ai.fitness.dto.request;
 
-import jakarta.validation.constraints.Size;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.model.enumerated.MuscleGroup;
+
+import jakarta.validation.constraints.Size;
 
 public record ExerciseUpdateRequestDTO(
 

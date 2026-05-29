@@ -2,6 +2,7 @@ package org.raul.fit_ai.fitness.mapper;
 
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.model.UserProfile;
+
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

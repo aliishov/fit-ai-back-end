@@ -1,13 +1,7 @@
 package org.raul.fit_ai.fitness.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.fitness.client.NotificationPublisher;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
-import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.UserProgress;
@@ -16,15 +10,17 @@ import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.raul.fit_ai.fitness.service.ai.WorkoutAiService;
 import org.raul.fit_ai.fitness.service.ai.WorkoutPlanBuilder;
-import org.raul.fit_ai.notification.dto.NotificationPayload;
-import org.raul.fit_ai.notification.model.enumerated.NotificationType;
-import org.raul.fit_ai.notification.service.events.NotificationEventPublisher;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;

@@ -1,15 +1,17 @@
 package org.raul.fit_ai.fitness.service;
 
+import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.mapper.UserProfileMapper;
+import org.raul.fit_ai.fitness.model.UserProfile;
+import org.raul.fit_ai.fitness.repository.UserProfileRepository;
+
 import jakarta.persistence.EntityNotFoundException;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
-import org.raul.fit_ai.fitness.mapper.UserProfileMapper;
-import org.raul.fit_ai.fitness.model.UserProfile;
-import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
-import org.raul.fit_ai.fitness.repository.UserProfileRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

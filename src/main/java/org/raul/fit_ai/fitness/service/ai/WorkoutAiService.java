@@ -1,17 +1,20 @@
 package org.raul.fit_ai.fitness.service.ai;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.common.exception.AiResponseParseException;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.UserProgress;
 import org.raul.fit_ai.fitness.service.WorkoutService;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,5 @@
 package org.raul.fit_ai.fitness.service.ai;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.fitness.dto.ai.AiDayDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiExerciseDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiWeekDTO;
@@ -19,6 +15,12 @@ import org.raul.fit_ai.fitness.repository.WorkoutDayExerciseRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutDayRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutWeekRepository;
 import org.raul.fit_ai.fitness.service.ExerciseService;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

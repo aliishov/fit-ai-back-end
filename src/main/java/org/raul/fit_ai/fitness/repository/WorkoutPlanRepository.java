@@ -1,8 +1,8 @@
 package org.raul.fit_ai.fitness.repository;
 
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
-
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

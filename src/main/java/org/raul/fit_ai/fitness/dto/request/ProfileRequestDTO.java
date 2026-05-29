@@ -1,6 +1,5 @@
 package org.raul.fit_ai.fitness.dto.request;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessGoal;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
@@ -8,6 +7,7 @@ import org.raul.fit_ai.fitness.model.enumerated.Gender;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;

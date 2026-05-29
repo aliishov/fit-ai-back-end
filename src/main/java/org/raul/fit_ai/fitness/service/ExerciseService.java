@@ -1,11 +1,5 @@
 package org.raul.fit_ai.fitness.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.exception.DuplicateResourceException;
 import org.raul.fit_ai.fitness.dto.request.ExerciseRequestDTO;
 import org.raul.fit_ai.fitness.dto.request.ExerciseUpdateRequestDTO;
@@ -15,6 +9,14 @@ import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
 import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.repository.ExerciseRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

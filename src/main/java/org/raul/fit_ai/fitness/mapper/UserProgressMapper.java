@@ -1,9 +1,11 @@
 package org.raul.fit_ai.fitness.mapper;
 
-import lombok.experimental.UtilityClass;
 import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.model.UserProgress;
+
+import lombok.experimental.UtilityClass;
+
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
