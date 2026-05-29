@@ -1,19 +1,14 @@
 package org.raul.fit_ai.fitness.service;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.raul.fit_ai.auth.model.UserPrincipal;
-import org.raul.fit_ai.fitness.client.AppUserClient;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
-import org.raul.fit_ai.fitness.dto.response.ProfileIdResponseDTO;
 import org.raul.fit_ai.fitness.mapper.WorkoutPlanMapper;
-import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
