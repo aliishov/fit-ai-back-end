@@ -7,9 +7,7 @@ import org.raul.fit_ai.fitness.mapper.UserProgressMapper;
 import org.raul.fit_ai.fitness.model.UserProgress;
 import org.raul.fit_ai.fitness.repository.UserProgressRepository;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -20,12 +18,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class ProgressService {
 
-	UserProgressRepository userProgressRepository;
-	WorkoutService workoutService;
+	private final UserProgressRepository userProgressRepository;
+	private final WorkoutService workoutService;
 
 	@Transactional
 	public void recordProgress(UserPrincipal principal, RecordProgressRequestDTO request) {
