@@ -30,7 +30,6 @@ public class WorkoutAiService {
 
 	ChatClient chatClient;
 	ObjectMapper objectMapper;
-	WorkoutService workoutService;
 
 	public AiWorkoutPlanDTO  generatePLan(
 			UserProfile profile,

@@ -5,11 +5,13 @@ import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.mapper.UserProgressMapper;
 import org.raul.fit_ai.fitness.model.UserProgress;
+import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.UserProgressRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +24,17 @@ import java.util.UUID;
 public class ProgressService {
 
 	private final UserProgressRepository userProgressRepository;
-	private final WorkoutService workoutService;
+	private final WorkoutPlanRepository workoutPlanRepository;
 
 	@Transactional
 	public void recordProgress(UserPrincipal principal, RecordProgressRequestDTO request) {
 		log.info("Recording progress for principal [{}]", principal.getId());
 
-		if (!workoutService.existsById(request.planId())) {
+		if (!workoutPlanRepository.existsById(request.planId())) {
 			throw new IllegalArgumentException("Workout does not exist");
 		}
 
-		if (!workoutService.isPLanActive(request.planId())) {
+		if (!workoutPlanRepository.existsByIdAndStatus(request.planId(), PlanStatus.ACTIVE)) {
 			throw new IllegalArgumentException("Workout is not active");
 		}
 
@@ -48,9 +50,5 @@ public class ProgressService {
 		return userProgresses.stream()
 				.map(UserProgressMapper::toResponseDto)
 				.toList();
-	}
-
-	public List<UserProgress> findByUserIdOrderByRecordedAtDesc(UUID userId) {
-		return userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId);
 	}
 }

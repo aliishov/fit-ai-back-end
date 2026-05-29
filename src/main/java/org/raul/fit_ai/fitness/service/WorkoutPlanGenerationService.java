@@ -7,9 +7,14 @@ import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.UserProgress;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
+import org.raul.fit_ai.fitness.repository.ExerciseRepository;
+import org.raul.fit_ai.fitness.repository.UserProfileRepository;
+import org.raul.fit_ai.fitness.repository.UserProgressRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.raul.fit_ai.fitness.service.ai.WorkoutAiService;
 import org.raul.fit_ai.fitness.service.ai.WorkoutPlanBuilder;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +37,9 @@ import java.util.stream.Collectors;
 public class WorkoutPlanGenerationService {
 
 	WorkoutPlanRepository workoutPlanRepository;
-	UserProfileService userProfileService;
-	ExerciseService exerciseService;
-	ProgressService progressService;
+	UserProfileRepository userProfileRepository;
+	ExerciseRepository exerciseRepository;
+	UserProgressRepository userProgressRepository;
 	WorkoutPlanBuilder workoutPlanBuilder;
 	NotificationPublisher notificationPublisher;
 	WorkoutAiService workoutAiService;
@@ -45,9 +50,10 @@ public class WorkoutPlanGenerationService {
 		log.info("Starting async plan generation planId=[{}] userId=[{}]", plan.getId(), userId);
 
 		try {
-			UserProfile profile = userProfileService.findByUserId(userId);
+			UserProfile profile = userProfileRepository.findByUserId(userId)
+					.orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 
-			List<Exercise> exercises = exerciseService
+			List<Exercise> exercises = exerciseRepository
 					.findByActivityTypeAndDifficulty(
 							profile.getActivityType(),
 							profile.getFitnessLevel());
@@ -62,8 +68,7 @@ public class WorkoutPlanGenerationService {
 				return;
 			}
 
-			List<UserProgress> history = progressService
-					.findByUserIdOrderByRecordedAtDesc(userId);
+			List<UserProgress> history = userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId);
 
 			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePLan(profile, exercises, history, durationWeeks);
 

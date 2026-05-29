@@ -11,10 +11,12 @@ import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.WorkoutWeek;
 import org.raul.fit_ai.fitness.model.enumerated.MuscleGroup;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
+import org.raul.fit_ai.fitness.repository.ExerciseRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutDayExerciseRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutDayRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutWeekRepository;
-import org.raul.fit_ai.fitness.service.ExerciseService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,7 @@ public class WorkoutPlanBuilder {
 	WorkoutWeekRepository weekRepository;
 	WorkoutDayRepository dayRepository;
 	WorkoutDayExerciseRepository dayExerciseRepository;
-	ExerciseService exerciseService;
+	ExerciseRepository exerciseRepository;
 
 	@Transactional
 	public void buildAndSave(WorkoutPlan plan, AiWorkoutPlanDTO aiPlan,
@@ -70,8 +72,9 @@ public class WorkoutPlanBuilder {
 				}
 
 				for (AiExerciseDTO aiExercise : validExercises) {
-					Exercise exercise = exerciseService
-							.getReferenceById(aiExercise.exerciseId());
+					Exercise exercise = exerciseRepository
+							.findById(aiExercise.exerciseId())
+							.orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
 
 					WorkoutDayExercise dayExercise = WorkoutDayExercise.builder()
 							.workoutDay(day)
