@@ -6,6 +6,7 @@ import org.raul.fit_ai.auth.model.enumerated.OtpType;
 import org.raul.fit_ai.auth.repository.OtpTokenRepository;
 import org.raul.fit_ai.common.exception.InvalidOtpException;
 import org.raul.fit_ai.common.exception.InvalidTokenException;
+import org.raul.fit_ai.common.services.NotificationPublisher;
 import org.raul.fit_ai.notification.dto.NotificationPayload;
 import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 

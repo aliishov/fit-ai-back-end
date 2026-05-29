@@ -1,6 +1,6 @@
 package org.raul.fit_ai.fitness.service;
 
-import org.raul.fit_ai.fitness.client.NotificationPublisher;
+import org.raul.fit_ai.common.services.NotificationPublisher;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.UserProfile;
