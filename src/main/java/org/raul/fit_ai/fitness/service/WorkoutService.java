@@ -1,9 +1,11 @@
 package org.raul.fit_ai.fitness.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
+import org.raul.fit_ai.fitness.dto.response.PlanResponseDTO;
 import org.raul.fit_ai.fitness.mapper.WorkoutPlanMapper;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
@@ -60,5 +62,14 @@ public class WorkoutService {
 
 	protected boolean isPLanActive(UUID planId) {
 		return workoutPlanRepository.existsByIdAndStatus(planId, PlanStatus.ACTIVE);
+	}
+
+	public PlanResponseDTO getPLan(UserPrincipal principal, UUID planId) {
+		log.info("Getting plan for user [{}]", principal.getId());
+
+		WorkoutPlan plan = workoutPlanRepository.findById(planId)
+				.orElseThrow(() -> new EntityNotFoundException("Workout plan not found"));
+
+		return WorkoutPlanMapper.toResponseDto(plan);
 	}
 }

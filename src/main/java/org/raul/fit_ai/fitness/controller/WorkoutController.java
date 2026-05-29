@@ -41,8 +41,8 @@ public class WorkoutController {
 	public ResponseEntity<BaseResponseDTO<InitResponseDTO>> initWorkout(
 			@AuthenticationPrincipal UserPrincipal principal
 	) {
-		InitResponseDTO response = workoutService.initWorkout(principal);
-		return ResponseEntity.ok(BaseResponseDTO.success(response));
+		InitResponseDTO data = workoutService.initWorkout(principal);
+		return ResponseEntity.ok(BaseResponseDTO.success(data));
 	}
 
 	@PostMapping("/plan/generate")
@@ -50,10 +50,10 @@ public class WorkoutController {
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid ProfileRequestDTO request
 	) {
-		PlanIdResponseDTO response = workoutService.generateWorkout(principal, request);
+		PlanIdResponseDTO data = workoutService.generateWorkout(principal, request);
 		return ResponseEntity
 				.accepted()
-				.body(BaseResponseDTO.success(response, "Plan generation started"));
+				.body(BaseResponseDTO.success(data, "Plan generation started"));
 	}
 
 	@PostMapping("/plan/{planId}")
@@ -61,6 +61,7 @@ public class WorkoutController {
 			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable @Valid UUID planId
 	) {
-		return ResponseEntity.ok().build();
+		PlanResponseDTO data = workoutService.getPLan(principal, planId);
+		return ResponseEntity.ok(BaseResponseDTO.success(data));
 	}
 }
