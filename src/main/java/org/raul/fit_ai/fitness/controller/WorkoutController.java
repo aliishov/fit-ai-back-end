@@ -3,7 +3,7 @@ package org.raul.fit_ai.fitness.controller;
 import org.raul.fit_ai.auth.annotation.AppUser;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
-import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.dto.request.GenerateWorkoutRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanIdResponseDTO;
 import org.raul.fit_ai.fitness.dto.response.PlanResponseDTO;
@@ -48,7 +48,7 @@ public class WorkoutController {
 	@PostMapping("/plan/generate")
 	public ResponseEntity<BaseResponseDTO<PlanIdResponseDTO>> generateWorkout(
 			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestBody @Valid ProfileRequestDTO request
+			@RequestBody @Valid GenerateWorkoutRequestDTO request
 	) {
 		PlanIdResponseDTO data = workoutService.generateWorkout(principal, request);
 		return ResponseEntity
@@ -56,12 +56,12 @@ public class WorkoutController {
 				.body(BaseResponseDTO.success(data, "Plan generation started"));
 	}
 
-	@PostMapping("/plan/{planId}")
+	@GetMapping("/plan/{planId}")
 	public ResponseEntity<BaseResponseDTO<PlanResponseDTO>> getPlan(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable @Valid UUID planId
 	) {
-		PlanResponseDTO data = workoutService.getPLan(principal, planId);
+		PlanResponseDTO data = workoutService.getPlan(principal, planId);
 		return ResponseEntity.ok(BaseResponseDTO.success(data));
 	}
 }

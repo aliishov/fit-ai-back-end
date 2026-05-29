@@ -1,9 +1,13 @@
 package org.raul.fit_ai.fitness.service;
 
+import org.raul.fit_ai.common.exception.BadRequestException;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.dto.response.ProfileResponseDTO;
 import org.raul.fit_ai.fitness.mapper.UserProfileMapper;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.repository.UserProfileRepository;
+import org.raul.fit_ai.fitness.validator.UserProfileValidator;
+import org.raul.fit_ai.fitness.validator.UserProfileValidator.NormalizedUserProfile;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -18,46 +22,58 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class UserProfileService {
 
 	private final UserProfileRepository userProfileRepository;
 
-	@Transactional(readOnly = true)
 	public boolean existsByUserId(UUID userId) {
+		UserProfileValidator.validateUserId(userId);
 		log.info("Checking if profile exists by user id [{}]", userId);
 		return userProfileRepository.existsByUserId(userId);
 	}
 
 	@Transactional
-	public void createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
+	public ProfileResponseDTO createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
+		NormalizedUserProfile normalizedRequest = UserProfileValidator.validateAndNormalize(userId, request);
 		log.info("Creating or updating profile for user [{}]", userId);
 
 		UserProfile profile = userProfileRepository.findByUserId(userId)
 				.map(existing -> {
-					updateProfile(existing, request);
+					UserProfileMapper.updateEntity(existing, normalizedRequest);
 					return existing;
 				})
 				.orElseGet(() ->
-						UserProfileMapper.toEntity(request, userId)
+						UserProfileMapper.toEntity(normalizedRequest)
 				);
 
-		userProfileRepository.save(profile);
+		profile = userProfileRepository.save(profile);
+		return UserProfileMapper.toResponseDto(profile);
 	}
 
-	private void updateProfile(UserProfile profile, ProfileRequestDTO request) {
-		if (request.activityType() != null) profile.setActivityType(request.activityType());
-		if (request.weightKg() != null) profile.setWeightKg(request.weightKg());
-		if (request.heightCm() != null) profile.setHeightCm(request.heightCm());
-		if (request.age() != null) profile.setAge(request.age());
-		if (request.gender() != null) profile.setGender(request.gender());
-		if (request.goal() != null) profile.setGoal(request.goal());
-		if (request.fitnessLevel() != null) profile.setFitnessLevel(request.fitnessLevel());
-		if (request.sessionsPerWeek() != null) profile.setSessionsPerWeek(request.sessionsPerWeek());
-		if (request.limitations() != null) profile.setLimitations(request.limitations());
+	public boolean hasCompleteProfile(UUID userId) {
+		UserProfileValidator.validateUserId(userId);
+		return userProfileRepository.findByUserId(userId)
+				.map(UserProfileValidator::isComplete)
+				.orElse(false);
 	}
 
-	@Transactional(readOnly = true)
+	public UserProfile findCompleteByUserId(UUID userId) {
+		UserProfileValidator.validateUserId(userId);
+		UserProfile profile = userProfileRepository.findByUserId(userId)
+				.orElseThrow(() -> new BadRequestException("Complete profile is required before workout generation"));
+		if (!UserProfileValidator.isComplete(profile)) {
+			throw new BadRequestException("Complete profile is required before workout generation");
+		}
+		return profile;
+	}
+
+	public ProfileResponseDTO getProfile(UUID userId) {
+		return UserProfileMapper.toResponseDto(findByUserId(userId));
+	}
+
 	public UserProfile findByUserId(UUID userId) {
+		UserProfileValidator.validateUserId(userId);
 		return userProfileRepository.findByUserId(userId)
 				.orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 	}

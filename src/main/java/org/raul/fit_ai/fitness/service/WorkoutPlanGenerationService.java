@@ -46,10 +46,13 @@ public class WorkoutPlanGenerationService {
 
 	@Async
 	@Transactional
-	public void generateAsync(WorkoutPlan plan, UUID userId, Integer durationWeeks) {
-		log.info("Starting async plan generation planId=[{}] userId=[{}]", plan.getId(), userId);
+	public void generateAsync(UUID planId, UUID userId) {
+		log.info("Starting async plan generation planId=[{}] userId=[{}]", planId, userId);
 
 		try {
+			WorkoutPlan plan = workoutPlanRepository.findByIdAndUserId(planId, userId)
+					.orElseThrow(() -> new EntityNotFoundException("Workout plan not found"));
+
 			UserProfile profile = userProfileRepository.findByUserId(userId)
 					.orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 
@@ -70,7 +73,12 @@ public class WorkoutPlanGenerationService {
 
 			List<UserProgress> history = userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId);
 
-			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePLan(profile, exercises, history, durationWeeks);
+			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePLan(
+					profile,
+					exercises,
+					history,
+					plan.getDurationWeeks()
+			);
 
 			workoutPlanBuilder.buildAndSave(plan, aiPlan, allowedIds);
 
@@ -92,8 +100,8 @@ public class WorkoutPlanGenerationService {
 			log.info("Plan generation completed planId=[{}] status=[{}]", plan.getId(), finalStatus);
 
 		} catch (Exception e) {
-			log.error("Plan generation failed planId=[{}]", plan.getId(), e);
-			workoutPlanRepository.updateStatus(plan.getId(), PlanStatus.CANCELLED);
+			log.error("Plan generation failed planId=[{}]", planId, e);
+			workoutPlanRepository.updateStatus(planId, PlanStatus.CANCELLED);
 		}
 	}
 }
