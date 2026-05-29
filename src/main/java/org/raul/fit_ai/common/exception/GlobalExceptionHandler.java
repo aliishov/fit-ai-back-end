@@ -66,6 +66,14 @@ public class GlobalExceptionHandler {
 				.body(BaseResponseDTO.error(ex.getMessage()));
 	}
 
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<BaseResponseDTO<Void>> handleBadRequest(BadRequestException ex) {
+		log.warn("Bad request: {}", ex.getMessage());
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.body(BaseResponseDTO.error(ex.getMessage()));
+	}
+
 	@ExceptionHandler(UnauthorizedException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleUnauthorized(UnauthorizedException ex) {
 		log.warn("Unauthorized: {}", ex.getMessage());

@@ -5,14 +5,11 @@ import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.UserProfile;
 import org.raul.fit_ai.fitness.model.UserProgress;
-import org.raul.fit_ai.fitness.service.WorkoutService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.ai.chat.client.ChatClient;
@@ -24,12 +21,11 @@ import java.util.List;
 @Profile("prod")
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class WorkoutAiService {
 
-	ChatClient chatClient;
-	ObjectMapper objectMapper;
+	private final ChatClient chatClient;
+	private final ObjectMapper objectMapper;
 
 	public AiWorkoutPlanDTO  generatePLan(
 			UserProfile profile,

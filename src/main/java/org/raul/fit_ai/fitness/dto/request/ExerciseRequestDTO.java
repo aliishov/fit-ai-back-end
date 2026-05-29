@@ -25,15 +25,19 @@ public record ExerciseRequestDTO(
 		)
 		String description,
 
-		@NotNull
+		@NotNull(message = "Activity type is required")
 		ActivityType activityType,
 
-		@NotNull
+		@NotNull(message = "Muscle group is required")
 		MuscleGroup muscleGroup,
 
-		@NotNull
+		@NotNull(message = "Difficulty is required")
 		FitnessLevel difficulty,
 
+		@Size(
+				max = 255,
+				message = "Equipment needed should not exceed 255 characters"
+		)
 		String equipmentNeeded
 ) {
 }

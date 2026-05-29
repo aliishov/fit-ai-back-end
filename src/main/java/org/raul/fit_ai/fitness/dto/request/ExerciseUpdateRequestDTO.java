@@ -24,6 +24,11 @@ public record ExerciseUpdateRequestDTO(
 		ActivityType activityType,
 		MuscleGroup muscleGroup,
 		FitnessLevel difficulty,
+
+		@Size(
+				max = 255,
+				message = "Equipment needed should not exceed 255 characters"
+		)
 		String equipmentNeeded
 ) {
 }

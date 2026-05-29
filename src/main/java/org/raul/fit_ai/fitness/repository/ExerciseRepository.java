@@ -11,7 +11,9 @@ import java.util.List;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
-	boolean existsByName(String name);
+	boolean existsByNameIgnoreCase(String name);
+
+	boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 
 	List<Exercise> findByActivityTypeAndDifficulty(ActivityType activityType, FitnessLevel difficulty);
 }
