@@ -1,6 +1,5 @@
 package org.raul.fit_ai.fitness.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.InitResponseDTO;
@@ -10,6 +9,8 @@ import org.raul.fit_ai.fitness.mapper.WorkoutPlanMapper;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

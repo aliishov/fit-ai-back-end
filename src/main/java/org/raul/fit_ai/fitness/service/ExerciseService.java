@@ -25,11 +25,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class ExerciseService {
 
-	ExerciseRepository exerciseRepository;
+	private final ExerciseRepository exerciseRepository;
 
 	@Transactional
 	public URI createExercise(ExerciseRequestDTO request) {
@@ -40,6 +39,7 @@ public class ExerciseService {
 		}
 
 		Exercise exercise = ExerciseMapper.toEntity(request);
+		exercise = exerciseRepository.save(exercise);
 
 		log.info("Successfully created exercise [{}]", exercise.getId());
 		return URI.create("/api/v1/exercise/" + exercise.getId());
