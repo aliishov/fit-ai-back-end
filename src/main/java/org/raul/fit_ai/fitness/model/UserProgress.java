@@ -46,7 +46,7 @@ public class UserProgress {
 	@Column(name = "user_id", nullable = false, updatable = false)
 	UUID userId;
 
-	@Column(name = "weight_kg", nullable = false)
+	@Column(name = "weight_kg", nullable = false, precision = 5, scale = 2)
 	BigDecimal weightKg;
 
 	@Column(name = "height_cm", nullable = false)
@@ -55,10 +55,10 @@ public class UserProgress {
 	@Column(name = "notes", columnDefinition = "TEXT")
 	String notes;
 
-	@Column(name = "plan_id")
+	@Column(name = "plan_id", nullable = false, updatable = false)
 	UUID planId;
 
 	@CreatedDate
-	@Column(name = "recorded_at", updatable = false)
+	@Column(name = "recorded_at", nullable = false, updatable = false)
 	OffsetDateTime recordedAt;
 }

@@ -5,13 +5,15 @@ import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.mapper.UserProgressMapper;
 import org.raul.fit_ai.fitness.model.UserProgress;
-import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.UserProgressRepository;
+import org.raul.fit_ai.fitness.validator.ProgressValidator;
+import org.raul.fit_ai.fitness.validator.ProgressValidator.NormalizedProgressRecord;
+
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,34 +23,63 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class ProgressService {
 
 	private final UserProgressRepository userProgressRepository;
-	private final WorkoutPlanRepository workoutPlanRepository;
+	private final ProgressValidator progressValidator;
 
 	@Transactional
-	public void recordProgress(UserPrincipal principal, RecordProgressRequestDTO request) {
-		log.info("Recording progress for principal [{}]", principal.getId());
+	public ProgressResponseDTO recordProgress(UserPrincipal principal, RecordProgressRequestDTO request) {
+		NormalizedProgressRecord normalizedRequest = progressValidator.validateAndNormalizeRecordRequest(
+				principal,
+				request
+		);
+		log.info("Recording progress for principal [{}]", normalizedRequest.userId());
 
-		if (!workoutPlanRepository.existsById(request.planId())) {
-			throw new IllegalArgumentException("Workout does not exist");
-		}
+		UserProgress userProgress = UserProgressMapper.toEntity(normalizedRequest);
+		userProgress = userProgressRepository.save(userProgress);
 
-		if (!workoutPlanRepository.existsByIdAndStatus(request.planId(), PlanStatus.ACTIVE)) {
-			throw new IllegalArgumentException("Workout is not active");
-		}
-
-		UserProgress userProgress = UserProgressMapper.toEntity(request, principal.getId());
-		userProgressRepository.save(userProgress);
+		return UserProgressMapper.toResponseDto(userProgress);
 	}
 
 	public List<ProgressResponseDTO> getProgress(UserPrincipal principal, UUID planId) {
-		log.info("Getting progress for plan [{}] and for principal [{}]", planId, principal.getId());
+		UUID userId = progressValidator.requireUserId(principal);
+		progressValidator.validatePlanForProgressRead(planId, userId);
+		log.info("Getting progress for plan [{}] and for principal [{}]", planId, userId);
 
-		List<UserProgress> userProgresses = userProgressRepository.findByUserIdAndPlanId(principal.getId(), planId);
-
-		return userProgresses.stream()
+		return userProgressRepository.findByUserIdAndPlanIdOrderByRecordedAtDesc(userId, planId)
+				.stream()
 				.map(UserProgressMapper::toResponseDto)
 				.toList();
+	}
+
+	public List<ProgressResponseDTO> getProgressHistory(UserPrincipal principal) {
+		UUID userId = progressValidator.requireUserId(principal);
+		log.info("Getting progress history for principal [{}]", userId);
+
+		return userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId)
+				.stream()
+				.map(UserProgressMapper::toResponseDto)
+				.toList();
+	}
+
+	public ProgressResponseDTO getLatestProgress(UserPrincipal principal) {
+		UUID userId = progressValidator.requireUserId(principal);
+		log.info("Getting latest progress for principal [{}]", userId);
+
+		return userProgressRepository.findFirstByUserIdOrderByRecordedAtDesc(userId)
+				.map(UserProgressMapper::toResponseDto)
+				.orElseThrow(() -> new EntityNotFoundException("Progress not found"));
+	}
+
+	public ProgressResponseDTO getProgressRecord(UserPrincipal principal, UUID progressId) {
+		UUID userId = progressValidator.requireUserId(principal);
+		progressValidator.validateProgressId(progressId);
+		log.info("Getting progress record [{}] for principal [{}]", progressId, userId);
+
+		return userProgressRepository.findByIdAndUserId(progressId, userId)
+				.map(UserProgressMapper::toResponseDto)
+				.orElseThrow(() -> new EntityNotFoundException("Progress not found"));
 	}
 }

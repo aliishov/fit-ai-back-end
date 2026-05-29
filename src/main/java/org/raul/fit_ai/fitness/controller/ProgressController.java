@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,16 +37,45 @@ public class ProgressController {
 	ProgressService progressService;
 
 	@PostMapping
-	public ResponseEntity<BaseResponseDTO<Void>> recordProgress(
+	public ResponseEntity<BaseResponseDTO<ProgressResponseDTO>> recordProgress(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@RequestBody @Valid RecordProgressRequestDTO request
 	) {
-		progressService.recordProgress(principal, request);
+		ProgressResponseDTO data = progressService.recordProgress(principal, request);
 		return ResponseEntity
-				.ok(BaseResponseDTO.success("Progress recorded successfully"));
+				.created(URI.create("/api/v1/progress/records/" + data.id()))
+				.body(BaseResponseDTO.success(data, "Progress recorded successfully"));
 	}
 
-	@GetMapping("/{planId}")
+	@GetMapping
+	public ResponseEntity<BaseResponseDTO<List<ProgressResponseDTO>>> getProgressHistory(
+			@AuthenticationPrincipal UserPrincipal principal
+	) {
+		List<ProgressResponseDTO> data = progressService.getProgressHistory(principal);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success(data, "Progress history fetched successfully"));
+	}
+
+	@GetMapping("/latest")
+	public ResponseEntity<BaseResponseDTO<ProgressResponseDTO>> getLatestProgress(
+			@AuthenticationPrincipal UserPrincipal principal
+	) {
+		ProgressResponseDTO data = progressService.getLatestProgress(principal);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success(data, "Latest progress fetched successfully"));
+	}
+
+	@GetMapping("/records/{progressId}")
+	public ResponseEntity<BaseResponseDTO<ProgressResponseDTO>> getProgressRecord(
+			@AuthenticationPrincipal UserPrincipal principal,
+			@PathVariable UUID progressId
+	) {
+		ProgressResponseDTO data = progressService.getProgressRecord(principal, progressId);
+		return ResponseEntity
+				.ok(BaseResponseDTO.success(data, "Progress record fetched successfully"));
+	}
+
+	@GetMapping({"/plans/{planId}", "/{planId}"})
 	public ResponseEntity<BaseResponseDTO<List<ProgressResponseDTO>>> getProgress(
 			@AuthenticationPrincipal UserPrincipal principal,
 			@PathVariable UUID planId

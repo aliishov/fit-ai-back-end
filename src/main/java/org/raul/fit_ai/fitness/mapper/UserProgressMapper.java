@@ -1,25 +1,21 @@
 package org.raul.fit_ai.fitness.mapper;
 
-import org.raul.fit_ai.fitness.dto.request.RecordProgressRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ProgressResponseDTO;
 import org.raul.fit_ai.fitness.model.UserProgress;
+import org.raul.fit_ai.fitness.validator.ProgressValidator.NormalizedProgressRecord;
 
 import lombok.experimental.UtilityClass;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @UtilityClass
 public class UserProgressMapper {
 
-	public static UserProgress toEntity(RecordProgressRequestDTO request, UUID userId) {
+	public static UserProgress toEntity(NormalizedProgressRecord request) {
 		return UserProgress.builder()
-				.userId(userId)
+				.userId(request.userId())
 				.weightKg(request.weightKg())
 				.heightCm(request.heightCm())
 				.notes(request.notes())
 				.planId(request.planId())
-				.recordedAt(OffsetDateTime.now())
 				.build();
 	}
 

@@ -2,6 +2,7 @@ package org.raul.fit_ai.common.exception;
 
 import org.raul.fit_ai.common.dto.BaseResponseDTO;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
@@ -71,6 +72,14 @@ public class GlobalExceptionHandler {
 		log.warn("Bad request: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
+				.body(BaseResponseDTO.error(ex.getMessage()));
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<BaseResponseDTO<Void>> handleEntityNotFound(EntityNotFoundException ex) {
+		log.warn("Entity not found: {}", ex.getMessage());
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
 				.body(BaseResponseDTO.error(ex.getMessage()));
 	}
 

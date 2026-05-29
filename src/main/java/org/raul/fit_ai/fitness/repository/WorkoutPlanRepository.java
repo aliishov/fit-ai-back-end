@@ -21,4 +21,8 @@ public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlan, UUID> 
 	                  @Param("status") PlanStatus status);
 
 	boolean existsByIdAndStatus(UUID id, PlanStatus status);
+
+	boolean existsByIdAndUserId(UUID id, UUID userId);
+
+	boolean existsByIdAndUserIdAndStatus(UUID id, UUID userId, PlanStatus status);
 }
