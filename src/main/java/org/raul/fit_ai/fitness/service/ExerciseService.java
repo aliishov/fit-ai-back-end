@@ -12,6 +12,8 @@ import org.raul.fit_ai.fitness.dto.request.ExerciseUpdateRequestDTO;
 import org.raul.fit_ai.fitness.dto.response.ExerciseResponseDTO;
 import org.raul.fit_ai.fitness.mapper.ExerciseMapper;
 import org.raul.fit_ai.fitness.model.Exercise;
+import org.raul.fit_ai.fitness.model.enumerated.ActivityType;
+import org.raul.fit_ai.fitness.model.enumerated.FitnessLevel;
 import org.raul.fit_ai.fitness.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,5 +93,9 @@ public class ExerciseService {
 	public Exercise getReferenceById(Long id) {
 		return exerciseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Exercise with ID [" + id + "] not found"));
+	}
+
+	public List<Exercise> findByActivityTypeAndDifficulty(ActivityType activityType, FitnessLevel fitnessLevel) {
+		return exerciseRepository.findByActivityTypeAndDifficulty(activityType, fitnessLevel);
 	}
 }
