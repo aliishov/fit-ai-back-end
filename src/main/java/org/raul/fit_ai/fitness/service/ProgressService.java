@@ -50,4 +50,8 @@ public class ProgressService {
 				.map(UserProgressMapper::toResponseDto)
 				.toList();
 	}
+
+	public List<UserProgress> findByUserIdOrderByRecordedAtDesc(UUID userId) {
+		return userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId);
+	}
 }

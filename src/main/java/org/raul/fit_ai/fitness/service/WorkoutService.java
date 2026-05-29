@@ -52,7 +52,7 @@ public class WorkoutService {
 
 		plan = workoutPlanRepository.save(plan);
 
-		workoutPlanGenerationService.generateAsync(plan.getId(), principal.getId(), request);
+		workoutPlanGenerationService.generateAsync(plan, principal.getId(), request.durationWeeks());
 
 		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), principal.getId());
 		return new PlanIdResponseDTO(plan.getId());

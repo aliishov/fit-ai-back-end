@@ -1,17 +1,33 @@
 package org.raul.fit_ai.fitness.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.raul.fit_ai.fitness.client.NotificationPublisher;
+import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
+import org.raul.fit_ai.fitness.model.Exercise;
+import org.raul.fit_ai.fitness.model.UserProfile;
+import org.raul.fit_ai.fitness.model.UserProgress;
+import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
+import org.raul.fit_ai.fitness.service.ai.WorkoutAiService;
+import org.raul.fit_ai.fitness.service.ai.WorkoutPlanBuilder;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
+import org.raul.fit_ai.notification.service.events.NotificationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,26 +36,63 @@ import java.util.UUID;
 public class WorkoutPlanGenerationService {
 
 	WorkoutPlanRepository workoutPlanRepository;
+	UserProfileService userProfileService;
+	ExerciseService exerciseService;
+	ProgressService progressService;
+	WorkoutPlanBuilder workoutPlanBuilder;
+	NotificationPublisher notificationPublisher;
+	WorkoutAiService workoutAiService;
 
 	@Async
 	@Transactional
-	public void generateAsync(UUID planId, UUID userId, ProfileRequestDTO request) {
+	public void generateAsync(WorkoutPlan plan, UUID userId, Integer durationWeeks) {
+		log.info("Starting async plan generation planId=[{}] userId=[{}]", plan.getId(), userId);
+
 		try {
-			log.info("Starting AI generation for planId=[{}]", planId);
+			UserProfile profile = userProfileService.findByUserId(userId);
 
-			// TODO
-			// String aiResponse = aiService.generatePlan(request);
-			// buildAndSave(planId, aiResponse);
+			List<Exercise> exercises = exerciseService
+					.findByActivityTypeAndDifficulty(
+							profile.getActivityType(),
+							profile.getFitnessLevel());
 
-			workoutPlanRepository.updateStatus(planId, PlanStatus.ACTIVE);
+			Set<Long> allowedIds = exercises.stream()
+					.map(Exercise::getId)
+					.collect(Collectors.toSet());
 
-			// TODO send push notification
+			if (exercises.isEmpty()) {
+				log.error("No exercises available after filtering for userId=[{}]", userId);
+				workoutPlanRepository.updateStatus(plan.getId(), PlanStatus.CANCELLED);
+				return;
+			}
 
-			log.info("Plan generation completed planId=[{}]", planId);
+			List<UserProgress> history = progressService
+					.findByUserIdOrderByRecordedAtDesc(userId);
+
+			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePLan(profile, exercises, history, durationWeeks);
+
+			workoutPlanBuilder.buildAndSave(plan, aiPlan, allowedIds);
+
+			PlanStatus finalStatus = plan.getStatus() == PlanStatus.NEEDS_REVIEW
+					? PlanStatus.NEEDS_REVIEW
+					: PlanStatus.ACTIVE;
+
+			workoutPlanRepository.updateStatus(plan.getId(), finalStatus);
+
+			// 8. Уведомляем пользователя
+//			notificationPublisher.publish(
+//					NotificationPayload.push(
+//							userId,
+//							NotificationType.WORKOUT_PLAN_GENERATED,
+//							Map.of("name", "")
+//					)
+//			);
+
+			log.info("Plan generation completed planId=[{}] status=[{}]", plan.getId(), finalStatus);
 
 		} catch (Exception e) {
-			log.error("Plan generation failed planId=[{}]", planId, e);
-			workoutPlanRepository.updateStatus(planId, PlanStatus.CANCELLED);
+			log.error("Plan generation failed planId=[{}]", plan.getId(), e);
+			workoutPlanRepository.updateStatus(plan.getId(), PlanStatus.CANCELLED);
 		}
 	}
 }

@@ -57,4 +57,10 @@ public class UserProfileService {
 		if (request.sessionsPerWeek() != null) profile.setSessionsPerWeek(request.sessionsPerWeek());
 		if (request.limitations() != null) profile.setLimitations(request.limitations());
 	}
+
+	@Transactional(readOnly = true)
+	public UserProfile findByUserId(UUID userId) {
+		return userProfileRepository.findByUserId(userId)
+				.orElseThrow(() -> new EntityNotFoundException("Profile not found"));
+	}
 }
