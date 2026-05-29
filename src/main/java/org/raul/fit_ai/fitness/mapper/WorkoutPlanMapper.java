@@ -4,11 +4,11 @@ import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
 
-@Component
+@UtilityClass
 public class WorkoutPlanMapper {
 
 	public WorkoutPlan toEntity(UUID userId, ProfileRequestDTO request) {

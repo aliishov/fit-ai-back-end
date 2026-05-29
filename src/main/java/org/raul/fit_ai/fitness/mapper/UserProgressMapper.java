@@ -6,12 +6,9 @@ import org.raul.fit_ai.fitness.model.UserProgress;
 
 import lombok.experimental.UtilityClass;
 
-import org.springframework.stereotype.Component;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Component
 @UtilityClass
 public class UserProgressMapper {
 

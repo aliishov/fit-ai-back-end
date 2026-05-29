@@ -6,9 +6,6 @@ import org.raul.fit_ai.fitness.model.Exercise;
 
 import lombok.experimental.UtilityClass;
 
-import org.springframework.stereotype.Component;
-
-@Component
 @UtilityClass
 public class ExerciseMapper {
 

@@ -3,14 +3,14 @@ package org.raul.fit_ai.fitness.mapper;
 import org.raul.fit_ai.fitness.dto.request.ProfileRequestDTO;
 import org.raul.fit_ai.fitness.model.UserProfile;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
 
-@Component
+@UtilityClass
 public class UserProfileMapper {
 
-	public UserProfile toEntity(ProfileRequestDTO request, UUID userId) {
+	public static UserProfile toEntity(ProfileRequestDTO request, UUID userId) {
 		return UserProfile.builder()
 				.userId(userId)
 				.activityType(request.activityType())

@@ -24,7 +24,6 @@ import java.util.UUID;
 public class UserProfileService {
 
 	UserProfileRepository userProfileRepository;
-	UserProfileMapper userProfileMapper;
 
 	@Transactional(readOnly = true)
 	public boolean existsByUserId(UUID userId) {
@@ -42,7 +41,7 @@ public class UserProfileService {
 					return existing;
 				})
 				.orElseGet(() ->
-						userProfileMapper.toEntity(request, userId)
+						UserProfileMapper.toEntity(request, userId)
 				);
 
 		userProfileRepository.save(profile);

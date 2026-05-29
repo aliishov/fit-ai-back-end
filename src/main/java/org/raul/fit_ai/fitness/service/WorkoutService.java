@@ -27,7 +27,6 @@ public class WorkoutService {
 
 	UserProfileService userProfileService;
 	WorkoutPlanRepository workoutPlanRepository;
-	WorkoutPlanMapper workoutPlanMapper;
 	WorkoutPlanGenerationService workoutPlanGenerationService;
 
 	public InitResponseDTO initWorkout(UserPrincipal principal) {
@@ -45,7 +44,7 @@ public class WorkoutService {
 
 		userProfileService.createOrUpdateProfile(principal.getId(), request);
 
-		WorkoutPlan plan = workoutPlanMapper.toEntity(principal.getId(), request);
+		WorkoutPlan plan = WorkoutPlanMapper.toEntity(principal.getId(), request);
 
 		plan = workoutPlanRepository.save(plan);
 
