@@ -6,6 +6,7 @@ import org.raul.fit_ai.fitness.dto.ai.AiWeekDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.mapper.WorkoutDayExerciseMapper;
 import org.raul.fit_ai.fitness.mapper.WorkoutDayMapper;
+import org.raul.fit_ai.fitness.mapper.WorkoutWeekMapper;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.WorkoutDay;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
@@ -46,10 +47,7 @@ public class WorkoutPlanBuilder {
 		plan.setAiNotes(aiPlan.aiNotes());
 
 		for (AiWeekDTO aiWeek : aiPlan.weeks()) {
-			WorkoutWeek week = WorkoutWeek.builder()
-					.workoutPlan(plan)
-					.weekNumber(aiWeek.weekNumber())
-					.build();
+			WorkoutWeek week = WorkoutWeekMapper.toEntity(plan, aiWeek);
 			weekRepository.save(week);
 
 			for (AiDayDTO aiDay : aiWeek.days()) {
