@@ -4,12 +4,13 @@ import org.raul.fit_ai.fitness.dto.ai.AiDayDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiExerciseDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiWeekDTO;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
+import org.raul.fit_ai.fitness.mapper.WorkoutDayExerciseMapper;
+import org.raul.fit_ai.fitness.mapper.WorkoutDayMapper;
+import org.raul.fit_ai.fitness.mapper.WorkoutWeekMapper;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.WorkoutDay;
-import org.raul.fit_ai.fitness.model.WorkoutDayExercise;
 import org.raul.fit_ai.fitness.model.WorkoutPlan;
 import org.raul.fit_ai.fitness.model.WorkoutWeek;
-import org.raul.fit_ai.fitness.model.enumerated.MuscleGroup;
 import org.raul.fit_ai.fitness.model.enumerated.PlanStatus;
 import org.raul.fit_ai.fitness.repository.ExerciseRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutDayExerciseRepository;
@@ -46,19 +47,11 @@ public class WorkoutPlanBuilder {
 		plan.setAiNotes(aiPlan.aiNotes());
 
 		for (AiWeekDTO aiWeek : aiPlan.weeks()) {
-			WorkoutWeek week = WorkoutWeek.builder()
-					.workoutPlan(plan)
-					.weekNumber(aiWeek.weekNumber())
-					.build();
+			WorkoutWeek week = WorkoutWeekMapper.toEntity(plan, aiWeek);
 			weekRepository.save(week);
 
 			for (AiDayDTO aiDay : aiWeek.days()) {
-				WorkoutDay day = WorkoutDay.builder()
-						.workoutWeek(week)
-						.dayNumber(aiDay.dayNumber())
-						.focus(parseMuscleGroup(aiDay.focus()))
-						.notes(aiDay.notes())
-						.build();
+				WorkoutDay day = WorkoutDayMapper.toEntity(week, aiDay);
 				dayRepository.save(day);
 
 				List<AiExerciseDTO> validExercises = aiDay.exercises().stream()
@@ -76,28 +69,9 @@ public class WorkoutPlanBuilder {
 							.findById(aiExercise.exerciseId())
 							.orElseThrow(() -> new EntityNotFoundException("Exercise not found"));
 
-					WorkoutDayExercise dayExercise = WorkoutDayExercise.builder()
-							.workoutDay(day)
-							.exercise(exercise)
-							.sets(aiExercise.sets())
-							.reps(aiExercise.reps())
-							.durationSeconds(aiExercise.durationSeconds())
-							.restSeconds(aiExercise.restSeconds())
-							.orderIndex(aiExercise.orderIndex())
-							.notes(aiExercise.notes())
-							.build();
-					dayExerciseRepository.save(dayExercise);
+					dayExerciseRepository.save(WorkoutDayExerciseMapper.toEntity(day, exercise, aiExercise));
 				}
 			}
-		}
-	}
-
-	private MuscleGroup parseMuscleGroup(String focus) {
-		try {
-			return MuscleGroup.valueOf(focus.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			log.warn("Unknown muscle group [{}] from AI — defaulting to FULL_BODY", focus);
-			return MuscleGroup.FULL_BODY;
 		}
 	}
 }
