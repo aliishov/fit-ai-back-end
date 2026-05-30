@@ -73,7 +73,7 @@ public class WorkoutPlanGenerationService {
 
 			List<UserProgress> history = userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId);
 
-			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePLan(
+			AiWorkoutPlanDTO aiPlan = workoutAiService.generatePlan(
 					profile,
 					exercises,
 					history,
