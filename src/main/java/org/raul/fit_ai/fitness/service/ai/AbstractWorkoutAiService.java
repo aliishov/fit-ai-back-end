@@ -148,15 +148,29 @@ abstract class AbstractWorkoutAiService implements WorkoutAiService {
 
 	private AiWorkoutPlanDTO parseResponse(String response) {
 		try {
-			String clean = response
-					.replaceAll("```json\\s*", "")
-					.replaceAll("```\\s*", "")
-					.trim();
-
-			return objectMapper.readValue(clean, AiWorkoutPlanDTO.class);
+			return objectMapper.readValue(extractJsonObject(response), AiWorkoutPlanDTO.class);
 		} catch (JsonProcessingException e) {
 			log.error("Failed to parse AI response: {}", response);
 			throw new AiResponseParseException("Failed to parse workout plan from AI", e);
 		}
+	}
+
+	private String extractJsonObject(String response) {
+		if (response == null || response.isBlank()) {
+			throw new AiResponseParseException("AI response is empty");
+		}
+
+		String clean = response
+				.replaceAll("```json\\s*", "")
+				.replaceAll("```\\s*", "")
+				.trim();
+
+		int start = clean.indexOf('{');
+		int end = clean.lastIndexOf('}');
+		if (start < 0 || end < start) {
+			throw new AiResponseParseException("AI response does not contain a JSON object");
+		}
+
+		return clean.substring(start, end + 1);
 	}
 }
