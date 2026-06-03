@@ -32,4 +32,9 @@ public record NotificationPayload(
 		return new NotificationPayload(userId, NotificationChannel.PUSH,
 				type, deviceToken, null, title, variables);
 	}
+
+	public static NotificationPayload push(UUID userId, NotificationType type,
+	                                       String title, Map<String, String> variables) {
+		return push(userId, type, null, title, variables);
+	}
 }

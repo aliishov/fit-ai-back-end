@@ -1,6 +1,8 @@
 package org.raul.fit_ai.fitness.service;
 
+import org.raul.fit_ai.auth.model.AppUser;
 import org.raul.fit_ai.common.services.NotificationPublisher;
+import org.raul.fit_ai.fitness.client.AppUserClient;
 import org.raul.fit_ai.fitness.dto.ai.AiWorkoutPlanDTO;
 import org.raul.fit_ai.fitness.model.Exercise;
 import org.raul.fit_ai.fitness.model.UserProfile;
@@ -13,6 +15,8 @@ import org.raul.fit_ai.fitness.repository.UserProgressRepository;
 import org.raul.fit_ai.fitness.repository.WorkoutPlanRepository;
 import org.raul.fit_ai.fitness.service.ai.WorkoutAiService;
 import org.raul.fit_ai.fitness.service.ai.WorkoutPlanBuilder;
+import org.raul.fit_ai.notification.dto.NotificationPayload;
+import org.raul.fit_ai.notification.model.enumerated.NotificationType;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -26,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,6 +45,7 @@ public class WorkoutPlanGenerationService {
 	UserProfileRepository userProfileRepository;
 	ExerciseRepository exerciseRepository;
 	UserProgressRepository userProgressRepository;
+	AppUserClient appUserClient;
 	WorkoutPlanBuilder workoutPlanBuilder;
 	NotificationPublisher notificationPublisher;
 	WorkoutAiService workoutAiService;
@@ -88,14 +94,9 @@ public class WorkoutPlanGenerationService {
 
 			workoutPlanRepository.updateStatus(plan.getId(), finalStatus);
 
-			// 8. Уведомляем пользователя
-//			notificationPublisher.publish(
-//					NotificationPayload.push(
-//							userId,
-//							NotificationType.WORKOUT_PLAN_GENERATED,
-//							Map.of("name", "")
-//					)
-//			);
+			if (finalStatus == PlanStatus.ACTIVE) {
+				publishPlanGeneratedNotification(userId, plan);
+			}
 
 			log.info("Plan generation completed planId=[{}] status=[{}]", plan.getId(), finalStatus);
 
@@ -103,5 +104,37 @@ public class WorkoutPlanGenerationService {
 			log.error("Plan generation failed planId=[{}]", planId, e);
 			workoutPlanRepository.updateStatus(planId, PlanStatus.CANCELLED);
 		}
+	}
+
+	private void publishPlanGeneratedNotification(UUID userId, WorkoutPlan plan) {
+		notificationPublisher.publish(
+				NotificationPayload.push(
+						userId,
+						NotificationType.WORKOUT_PLAN_GENERATED,
+						"Workout plan is ready",
+						Map.of(
+								"name", resolveUserName(userId),
+								"duration", String.valueOf(plan.getDurationWeeks())
+						)
+				)
+		);
+	}
+
+	private String resolveUserName(UUID userId) {
+		return appUserClient.findById(userId)
+				.map(this::resolveUserName)
+				.orElse("there");
+	}
+
+	private String resolveUserName(AppUser user) {
+		if (user.getFirstName() != null && !user.getFirstName().isBlank()) {
+			return user.getFirstName().trim();
+		}
+
+		if (user.getEmail() != null && !user.getEmail().isBlank()) {
+			return user.getEmail().trim();
+		}
+
+		return "there";
 	}
 }

@@ -128,4 +128,8 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 			userRepository.save(user);
 		}
 	}
+
+	public Optional<AppUser> findById(UUID userId) {
+		return userRepository.findById(userId);
+	}
 }

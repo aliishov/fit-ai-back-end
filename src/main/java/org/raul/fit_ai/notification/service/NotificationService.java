@@ -93,9 +93,17 @@ public class NotificationService {
 				.userId(payload.userId())
 				.channel(payload.channel())
 				.type(payload.type())
-				.recipient(payload.recipient())
+				.recipient(resolveRecipient(payload))
 				.status(status)
 				.errorMessage(error)
 				.build());
+	}
+
+	private String resolveRecipient(ResolvedNotificationPayload payload) {
+		if (payload.recipient() != null && !payload.recipient().isBlank()) {
+			return payload.recipient();
+		}
+
+		return payload.userId().toString();
 	}
 }

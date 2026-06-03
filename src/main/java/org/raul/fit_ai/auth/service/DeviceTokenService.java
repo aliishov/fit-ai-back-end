@@ -43,7 +43,7 @@ public class DeviceTokenService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<String> findActiveTokenByUserId(UUID userId) {
+	public List<String> findActiveTokensByUserId(UUID userId) {
 		return deviceTokenRepository.findActiveTokensByUserId(userId);
 	}
 
