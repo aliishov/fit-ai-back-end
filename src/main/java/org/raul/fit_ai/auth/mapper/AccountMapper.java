@@ -3,9 +3,9 @@ package org.raul.fit_ai.auth.mapper;
 import org.raul.fit_ai.auth.dto.response.AccountResponseDTO;
 import org.raul.fit_ai.auth.model.BaseUser;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
-@Component
+@UtilityClass
 public class AccountMapper {
 
 	public AccountResponseDTO toResponseDTO(BaseUser user) {
