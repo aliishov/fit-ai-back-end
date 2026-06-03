@@ -3,11 +3,11 @@ package org.raul.fit_ai.auth.mapper;
 import org.raul.fit_ai.auth.dto.request.DeviceTokenRequestDTO;
 import org.raul.fit_ai.auth.model.DeviceToken;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import java.util.UUID;
 
-@Component
+@UtilityClass
 public class DeviceTokenMapper {
 
 	public DeviceToken toEntity(DeviceTokenRequestDTO request, UUID userId) {
