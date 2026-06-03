@@ -37,8 +37,7 @@ public class FcmPushNotificationSender implements NotificationSender {
 	public void send(ResolvedNotificationPayload payload) {
 		log.info("Sending push to user=[{}] type=[{}]", payload.userId(), payload.type());
 
-		List<String> tokens = deviceTokenClient
-				.findActiveTokensByUserId(payload.userId());
+		List<String> tokens = resolveTokens(payload);
 
 		if (tokens.isEmpty()) {
 			log.warn("No active device tokens for user=[{}]", payload.userId());
@@ -84,5 +83,13 @@ public class FcmPushNotificationSender implements NotificationSender {
 	@Override
 	public NotificationChannel channel() {
 		return NotificationChannel.PUSH;
+	}
+
+	private List<String> resolveTokens(ResolvedNotificationPayload payload) {
+		if (payload.recipient() != null && !payload.recipient().isBlank()) {
+			return List.of(payload.recipient());
+		}
+
+		return deviceTokenClient.findActiveTokensByUserId(payload.userId());
 	}
 }

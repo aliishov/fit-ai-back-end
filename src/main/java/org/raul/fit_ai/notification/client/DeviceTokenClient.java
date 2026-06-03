@@ -16,7 +16,7 @@ public class DeviceTokenClient {
 	private final DeviceTokenService deviceTokenService;
 
 	public List<String> findActiveTokensByUserId(UUID userId) {
-		return deviceTokenService.findActiveTokenByUserId(userId);
+		return deviceTokenService.findActiveTokensByUserId(userId);
 	}
 
 	public void deactivateByToken(String deviceToken) {

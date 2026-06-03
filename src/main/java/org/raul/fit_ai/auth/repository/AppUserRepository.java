@@ -35,4 +35,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
 	@Query("UPDATE AppUser au SET au.lastSignIn = :lastSignIn WHERE au.id = :userId")
 	void updateLastSignInByUserId(@Param("userId") UUID userId,
 	                              @Param("lastSignIn") OffsetDateTime lastSignIn);
+
+	@Query("SELECT u.firstName FROM AppUser u WHERE u.id = :userId")
+	String findNameById(@Param("userId") UUID userId);
 }
