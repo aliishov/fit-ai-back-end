@@ -31,7 +31,6 @@ public class AccountService {
 
 	AdminUserRepository adminUserRepository;
 	AppUserRepository appUserRepository;
-	AccountMapper accountMapper;
 	PasswordManagementService passwordManagementService;
 	JwtManager jwtManager;
 	NotificationPublisher notificationPublisher;
@@ -41,7 +40,7 @@ public class AccountService {
 		log.info("Retrieving user info for [{}]", principal.getId());
 
 		BaseUser user = principal.user();
-		return accountMapper.toResponseDTO(user);
+		return AccountMapper.toResponseDTO(user);
 	}
 
 	@Transactional
@@ -83,7 +82,7 @@ public class AccountService {
 
 		save(user, true);
 
-		pushNotification(user, NotificationType.PASSWORD_CHANGED);
+		pushNotification(user);
 
 		jwtManager.revokeToken(request.refreshToken());
 	}
@@ -99,9 +98,9 @@ public class AccountService {
 		}
 	}
 
-	protected void pushNotification(BaseUser user, NotificationType type) {
+	protected void pushNotification(BaseUser user) {
 		notificationPublisher.publishCritical(
-				NotificationPayload.email(user.getId(), type,
+				NotificationPayload.email(user.getId(), NotificationType.PASSWORD_CHANGED,
 						user.getEmail(), null)
 		);
 	}

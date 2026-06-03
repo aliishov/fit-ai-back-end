@@ -6,9 +6,7 @@ import org.raul.fit_ai.auth.model.DeviceToken;
 import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.DeviceTokenRepository;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
@@ -19,12 +17,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class DeviceTokenService {
 
-	DeviceTokenRepository deviceTokenRepository;
-	DeviceTokenMapper deviceTokenMapper;
+	private final DeviceTokenRepository deviceTokenRepository;
 
 	@Transactional
 	public void saveToken(UserPrincipal principal, DeviceTokenRequestDTO request) {
@@ -37,7 +33,7 @@ public class DeviceTokenService {
 					existing.setPlatform(request.platform());
 					return existing;
 				})
-				.orElseGet(() -> deviceTokenMapper.toEntity(request, principal.getId()));
+				.orElseGet(() -> DeviceTokenMapper.toEntity(request, principal.getId()));
 
 		deviceTokenRepository.save(deviceToken);
 	}
