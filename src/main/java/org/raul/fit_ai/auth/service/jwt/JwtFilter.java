@@ -73,8 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		try {
 			identifier = jwtManager.extractUsername(jwtToken);
 		} catch (JwtException e) {
-			log.warn("Invalid JWT token for [{} {}]: {}",
-					request.getMethod(), request.getRequestURI(), e.getMessage());
+			log.warn("Rejected JWT authentication reason=[{}]", resolveJwtErrorCode(e));
 			writeErrorResponse(response, e);
 			return;
 		}
@@ -99,12 +98,11 @@ public class JwtFilter extends OncePerRequestFilter {
 							new WebAuthenticationDetailsSource().buildDetails(request));
 
 					SecurityContextHolder.getContext().setAuthentication(authentication);
-					log.debug("Authenticated identifier=[{}] type=[{}]", identifier, userType);
 				}
 			} catch (UsernameNotFoundException ex) {
-				log.warn("User not found identifier=[{}] userType=[{}]", identifier, userType);
+				log.warn("Authenticated principal not found userType=[{}]", userType);
 			} catch (ClassCastException ex) {
-				log.error("UserDetails is not UserPrincipal for identifier=[{}]", identifier);
+				log.error("Loaded user details with unexpected principal type userType=[{}]", userType);
 			}
 		}
 
@@ -121,5 +119,9 @@ public class JwtFilter extends OncePerRequestFilter {
 		response.setCharacterEncoding("UTF-8");
 		objectMapper.writeValue(response.getOutputStream(),
 				BaseResponseDTO.error(message));
+	}
+
+	private String resolveJwtErrorCode(JwtException e) {
+		return e instanceof ExpiredJwtException ? "expired" : "invalid";
 	}
 }
