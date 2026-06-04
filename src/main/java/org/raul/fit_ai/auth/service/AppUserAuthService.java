@@ -54,8 +54,6 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 	@Transactional
 	public URI signUp(RegisterRequestDTO request) {
-		log.info("Creating new app user account");
-
 		if (userRepository.existsByEmail(request.email())) {
 			throw new DuplicateResourceException("An account with this email already exists");
 		}
@@ -64,7 +62,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 		pushNotification(saved, NotificationType.WELCOME);
 
-		log.info("Successfully created app user account [{}]", saved.getId());
+		log.info("App user account created");
 		return URI.create("/api/v1/app/auth/users/" + saved.getId());
 	}
 
@@ -85,7 +83,7 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 	@Transactional
 	public void sendEmailConfirmation(UserPrincipal principal) {
-		log.info("Sending email confirmation to user [{}]", principal.getId());
+		log.info("Email confirmation requested");
 
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -95,20 +93,19 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 	@Transactional
 	public void emailConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
-		log.info("Confirming email confirmation to user [{}]", principal.getId());
-
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 		if (otpService.verifyOtp(principal.getId(), OtpType.EMAIL_VERIFICATION, request.rawOtp())) {
 			user.setEmailVerified(true);
 			userRepository.save(user);
+			log.info("Email confirmation completed");
 		}
 	}
 
 	@Transactional
 	public void sendPhoneConfirmation(UserPrincipal principal) {
-		log.info("Sending sms confirmation to user [{}]", principal.getId());
+		log.info("Phone confirmation requested");
 
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
@@ -118,14 +115,13 @@ public class AppUserAuthService extends BaseAuthService<AppUser, AppUserReposito
 
 	@Transactional
 	public void phoneConfirm(UserPrincipal principal, EmailConfirmRequestDTO request) {
-		log.info("Confirming phone confirmation to user [{}]", principal.getId());
-
 		AppUser user = userRepository.findById(principal.getId())
 				.orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 		if (otpService.verifyOtp(user.getId(), OtpType.PHONE_VERIFICATION, request.rawOtp())) {
 			user.setPhoneVerified(true);
 			userRepository.save(user);
+			log.info("Phone confirmation completed");
 		}
 	}
 
