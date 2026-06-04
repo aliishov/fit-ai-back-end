@@ -36,7 +36,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 
 		if (!userInfo.isEmailVerified()) {
-			log.warn("Email not verified for OAuth2 user [{}]", userInfo.getEmail());
+			log.warn("Email not verified by OAuth2 provider [{}]", registrationId);
 			throw new OAuth2AuthenticationException("Email not verified by OAuth2 provider");
 		}
 
@@ -71,7 +71,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 
 		if (user.getProvider() == AuthProvider.LOCAL) {
-			log.info("Linking {} provider to existing LOCAL user [{}]", provider, user.getId());
+			log.info("Linking OAuth2 provider [{}] to local account", provider);
 			user.setProvider(provider);
 			user.setProviderId(userInfo.getProviderId());
 			user.setAvatarUrl(userInfo.getAvatarUrl());
@@ -80,8 +80,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 
 		if (user.getProvider() != provider) {
-			log.warn("Provider conflict for user [{}]: existing=[{}] incoming=[{}]",
-					user.getId(), user.getProvider(), provider);
+			log.warn("OAuth2 provider conflict existing=[{}] incoming=[{}]",
+					user.getProvider(), provider);
 			throw new OAuth2AuthenticationException(
 					"Account already linked to " + user.getProvider().name() + " provider");
 		}
@@ -90,8 +90,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	}
 
 	private AppUser createNewUser(OAuth2UserInfo userInfo, AuthProvider provider) {
-		log.info("Creating new AppUser from OAuth2 provider [{}] email=[{}]",
-				provider, userInfo.getEmail());
+		log.info("Creating new AppUser from OAuth2 provider [{}]", provider);
 
 		AppUser newUser = AppUser.builder()
 				.email(userInfo.getEmail())
