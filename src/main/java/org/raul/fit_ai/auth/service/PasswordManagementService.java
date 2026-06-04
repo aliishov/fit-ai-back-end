@@ -8,7 +8,6 @@ import jakarta.validation.ValidationException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,14 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 public class PasswordManagementService {
 
 	PasswordEncoder passwordEncoder;
 
 	public void validatePasswordMatch(String password, String repeatedPassword) {
 		if (!password.equals(repeatedPassword)) {
-			log.warn("Password validation failed - passwords don't match");
 			throw new PasswordsDoNotMatchException("Passwords don't match");
 		}
 	}
@@ -37,7 +34,6 @@ public class PasswordManagementService {
 	public void updatePassword(BaseUser user, String newPassword) {
 		String encodedPassword = encodePassword(newPassword);
 		user.setPasswordHash(encodedPassword);
-		log.debug("Password reset for user: {}", user.getId());
 	}
 
 	public String encodePassword(String plainPassword) {
