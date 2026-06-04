@@ -46,7 +46,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String accessToken  = jwtManager.generateAccessToken(principal);
 		String refreshToken = jwtManager.generateRefreshToken(principal);
 
-		log.info("OAuth2 login successful for user=[{}]", principal.getId());
+		log.info("OAuth2 login successful");
 
 		appUserRepository.updateLastSignInByUserId(principal.getId(), OffsetDateTime.now());
 

@@ -32,7 +32,7 @@ public class WorkoutDayMapper {
 		try {
 			return MuscleGroup.valueOf(focus.toUpperCase(Locale.ROOT));
 		} catch (IllegalArgumentException e) {
-			log.warn("Unknown muscle group [{}] from AI - defaulting to FULL_BODY", focus);
+			log.warn("Unknown muscle group from AI - defaulting to FULL_BODY");
 			return MuscleGroup.FULL_BODY;
 		}
 	}

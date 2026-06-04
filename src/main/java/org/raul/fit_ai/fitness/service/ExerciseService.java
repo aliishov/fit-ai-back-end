@@ -34,7 +34,7 @@ public class ExerciseService {
 	@Transactional
 	public URI createExercise(ExerciseRequestDTO request) {
 		ExerciseRequestDTO normalizedRequest = exerciseValidator.validateAndNormalizeCreateRequest(request);
-		log.info("Creating new exercise with name: {}", normalizedRequest.name());
+		log.info("Creating new exercise");
 
 		Exercise exercise = ExerciseMapper.toEntity(normalizedRequest);
 		exercise = saveAndFlushExercise(exercise);

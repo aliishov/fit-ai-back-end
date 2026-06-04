@@ -29,14 +29,14 @@ public class UserProfileService {
 
 	public boolean existsByUserId(UUID userId) {
 		UserProfileValidator.validateUserId(userId);
-		log.info("Checking if profile exists by user id [{}]", userId);
+		log.info("Checking if profile exists");
 		return userProfileRepository.existsByUserId(userId);
 	}
 
 	@Transactional
 	public ProfileResponseDTO createOrUpdateProfile(UUID userId, ProfileRequestDTO request) {
 		NormalizedUserProfile normalizedRequest = UserProfileValidator.validateAndNormalize(userId, request);
-		log.info("Creating or updating profile for user [{}]", userId);
+		log.info("Creating or updating profile");
 
 		UserProfile profile = userProfileRepository.findByUserId(userId)
 				.map(existing -> {

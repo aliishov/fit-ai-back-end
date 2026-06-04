@@ -53,7 +53,7 @@ public class WorkoutPlanGenerationService {
 	@Async
 	@Transactional
 	public void generateAsync(UUID planId, UUID userId) {
-		log.info("Starting async plan generation planId=[{}] userId=[{}]", planId, userId);
+		log.info("Starting async plan generation planId=[{}]", planId);
 
 		try {
 			WorkoutPlan plan = workoutPlanRepository.findByIdAndUserId(planId, userId)
@@ -72,7 +72,7 @@ public class WorkoutPlanGenerationService {
 					.collect(Collectors.toSet());
 
 			if (exercises.isEmpty()) {
-				log.error("No exercises available after filtering for userId=[{}]", userId);
+				log.error("No exercises available after filtering");
 				workoutPlanRepository.updateStatus(plan.getId(), PlanStatus.CANCELLED);
 				return;
 			}

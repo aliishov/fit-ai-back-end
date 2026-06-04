@@ -59,8 +59,8 @@ public class WorkoutPlanBuilder {
 						.toList();
 
 				if (validExercises.isEmpty()) {
-					log.warn("No valid exercises for planId=[{}] week=[{}] day=[{}] — marking NEEDS_REVIEW",
-							plan.getId(), aiWeek.weekNumber(), aiDay.dayNumber());
+					log.warn("No valid exercises for week=[{}] day=[{}] — marking NEEDS_REVIEW",
+							aiWeek.weekNumber(), aiDay.dayNumber());
 					plan.setStatus(PlanStatus.NEEDS_REVIEW);
 				}
 

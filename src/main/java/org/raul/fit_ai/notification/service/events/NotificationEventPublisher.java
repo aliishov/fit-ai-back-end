@@ -55,16 +55,15 @@ public class NotificationEventPublisher {
 		kafkaTemplate.send(topic, payload.userId().toString(), payload)
 				.whenComplete((result, ex) -> {
 					if (ex != null) {
-						log.error("Failed to publish notification type=[{}] user=[{}] topic=[{}]",
-								payload.type(), payload.userId(), topic, ex);
-					} else {
-						log.info("Published notification type=[{}] user=[{}] partition=[{}] offset=[{}]",
-								payload.type(),
-								payload.userId(),
-								result.getRecordMetadata().partition(),
-								result.getRecordMetadata().offset());
-					}
-				});
+						log.error("Failed to publish notification type=[{}] topic=[{}]",
+								payload.type(), topic, ex);
+						} else {
+							log.info("Published notification type=[{}] partition=[{}] offset=[{}]",
+									payload.type(),
+									result.getRecordMetadata().partition(),
+									result.getRecordMetadata().offset());
+						}
+					});
 	}
 
 	public void publishCritical(NotificationPayload payload) {
@@ -79,20 +78,19 @@ public class NotificationEventPublisher {
 					.send(criticalTopic, payload.userId().toString(), payload)
 					.get(5, TimeUnit.SECONDS);
 
-			log.info("Published critical notification type=[{}] user=[{}] partition=[{}] offset=[{}]",
+			log.info("Published critical notification type=[{}] partition=[{}] offset=[{}]",
 					payload.type(),
-					payload.userId(),
 					result.getRecordMetadata().partition(),
 					result.getRecordMetadata().offset());
 
 		} catch (TimeoutException e) {
-			log.error("Timeout publishing critical notification type=[{}] user=[{}]",
-					payload.type(), payload.userId(), e);
+			log.error("Timeout publishing critical notification type=[{}]",
+					payload.type(), e);
 			throw new NotificationException("Notification service timeout — please try again", e);
 
 		} catch (ExecutionException e) {
-			log.error("Failed to publish critical notification type=[{}] user=[{}]",
-					payload.type(), payload.userId(), e);
+			log.error("Failed to publish critical notification type=[{}]",
+					payload.type(), e);
 			throw new NotificationException("Failed to queue notification", e);
 
 		} catch (InterruptedException e) {

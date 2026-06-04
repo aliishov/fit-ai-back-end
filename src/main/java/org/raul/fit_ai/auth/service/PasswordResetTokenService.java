@@ -39,8 +39,6 @@ public class PasswordResetTokenService {
 
 	@Transactional
 	protected String generatePasswordResetToken(BaseUser user, String identifier) {
-		log.info("Generating OTP for user [{}]", user.getId());
-
 		String otp = otpService.generateRawOtp();
 		String otpHash = otpService.hashOtp(otp);
 		String resetToken = UUID.randomUUID().toString();
@@ -58,7 +56,7 @@ public class PasswordResetTokenService {
 
 		pushNotification(user, otp, identifier);
 
-		log.info("OTP sent to [{}], reset token generated for user [{}]", identifier, user.getId());
+		log.info("Password reset OTP notification requested");
 		return resetToken;
 	}
 

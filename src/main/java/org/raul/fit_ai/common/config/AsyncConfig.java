@@ -1,14 +1,14 @@
 package org.raul.fit_ai.common.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -45,8 +45,8 @@ public class AsyncConfig implements AsyncConfigurer {
 		public void handleUncaughtException(Throwable ex,
 		                                    Method method,
 		                                    Object... params) {
-			log.error("Uncaught exception in @Async method=[{}] params=[{}]",
-					method.getName(), Arrays.toString(params), ex);
+			log.error("Uncaught exception in @Async method=[{}] type=[{}]",
+					method.getName(), ex.getClass().getSimpleName());
 		}
 	}
 }

@@ -37,16 +37,12 @@ public class AccountService {
 
 	@Transactional(readOnly = true)
 	public AccountResponseDTO getProfile(UserPrincipal principal) {
-		log.info("Retrieving user info for [{}]", principal.getId());
-
 		BaseUser user = principal.user();
 		return AccountMapper.toResponseDTO(user);
 	}
 
 	@Transactional
 	public void updateProfile(UserPrincipal principal, UpdateProfileRequestDTO request) {
-		log.info("Updating profile for user [{}]", principal.getId());
-
 		BaseUser user = principal.user();
 
 		if (request.firstName() != null) {
@@ -63,14 +59,10 @@ public class AccountService {
 		} else {
 			save(user, true);
 		}
-
-		log.info("User [{}] updated profile", user.getId());
 	}
 
 	@Transactional
 	public void updatePassword(UserPrincipal principal, ChangePasswordRequestDTO request) {
-		log.info("Updating password for user [{}]", principal.getId());
-
 		BaseUser user = principal.user();
 
 		String oldPassword = request.oldPassword();
@@ -85,6 +77,8 @@ public class AccountService {
 		pushNotification(user);
 
 		jwtManager.revokeToken(request.refreshToken());
+
+		log.info("Password changed by authenticated user");
 	}
 
 	private void save(BaseUser user, boolean phoneVerification) {

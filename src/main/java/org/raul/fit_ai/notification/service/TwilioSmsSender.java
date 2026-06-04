@@ -27,7 +27,7 @@ public class TwilioSmsSender implements NotificationSender {
 
 	@Override
 	public void send(ResolvedNotificationPayload payload) {
-		log.info("Sending SMS to [{}]", payload.recipient());
+		log.info("Sending SMS (recipient masked)");
 
 		try {
 			Message.creator(
@@ -35,8 +35,8 @@ public class TwilioSmsSender implements NotificationSender {
 					new PhoneNumber(twilioProperties.getPhoneNumber()),
 					payload.body()).create();
 		} catch (ApiException e) {
-			log.error("Failed to send SMS to [{}]", payload.recipient(), e);
-			throw new NotificationException("Failed to send SMS to " + payload.recipient(), e);
+			log.error("Failed to send SMS", e);
+			throw new NotificationException("Failed to send SMS", e);
 		}
 
 		smsRateLimitService.validateRateLimit(payload.recipient());

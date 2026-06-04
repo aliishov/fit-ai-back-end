@@ -39,7 +39,7 @@ public class DefaultAdminInitializer {
 	@PostConstruct
 	public void init() {
 		if (adminRepository.existsByEmail(adminEmail)) {
-			log.info("Default admin already exists — skipping initialization");
+			log.info("Default admin already exists; skipping initialization");
 			return;
 		}
 

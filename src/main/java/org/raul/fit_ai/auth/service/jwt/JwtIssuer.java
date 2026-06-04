@@ -11,7 +11,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ import static org.raul.fit_ai.auth.model.enumerated.TokenType.REFRESH_TOKEN;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtIssuer {
 
@@ -61,7 +59,6 @@ public class JwtIssuer {
 
 		jwtRegistry.saveToken(ACCESS_TOKEN.name(), jti, userIdStr, expirationMs);
 
-		log.debug("Access token generated for user [{}]", userIdStr);
 		return buildToken(claims, principal, expirationMs);
 	}
 
@@ -78,7 +75,6 @@ public class JwtIssuer {
 
 		jwtRegistry.saveToken(REFRESH_TOKEN.name(), jti, userIdStr, expirationMs);
 
-		log.debug("Refresh token issued for user [{}]", userIdStr);
 		return buildToken(claims, principal, expirationMs);
 	}
 
@@ -98,7 +94,6 @@ public class JwtIssuer {
 
 		jwtRegistry.saveToken(REFRESH_TOKEN.name(), jti, userIdStr, expirationMs);
 
-		log.debug("Refresh token rotated for user [{}]", userIdStr);
 		return buildToken(claims, principal, expirationMs);
 	}
 
