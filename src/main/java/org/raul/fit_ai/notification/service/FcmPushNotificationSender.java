@@ -35,12 +35,12 @@ public class FcmPushNotificationSender implements NotificationSender {
 
 	@Override
 	public void send(ResolvedNotificationPayload payload) {
-		log.info("Sending push to user=[{}] type=[{}]", payload.userId(), payload.type());
+		log.info("Sending push notification type=[{}]", payload.type());
 
 		List<String> tokens = resolveTokens(payload);
 
 		if (tokens.isEmpty()) {
-			log.warn("No active device tokens for user=[{}]", payload.userId());
+			log.warn("No active device tokens for user");
 			return;
 		}
 
@@ -56,7 +56,7 @@ public class FcmPushNotificationSender implements NotificationSender {
 			BatchResponse response = firebaseMessaging.sendEachForMulticast(message);
 			handleResponse(response, tokens, payload.userId());
 		} catch (FirebaseMessagingException e) {
-			log.error("Failed to send push to user=[{}]", payload.userId(), e);
+			log.error("Failed to send push notification", e);
 			throw new NotificationException("Failed to send push notification", e);
 		}
 	}
@@ -70,14 +70,14 @@ public class FcmPushNotificationSender implements NotificationSender {
 			if (!sendResponse.isSuccessful()) {
 				FirebaseMessagingException ex = sendResponse.getException();
 				if (ex != null && ex.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
-					log.warn("Device token expired for user=[{}] — deactivating", userId);
+					log.warn("Device token expired — deactivating");
 					deviceTokenClient.deactivateByToken(tokens.get(i));
 				}
 			}
 		}
 
-		log.info("Push sent to user=[{}] success=[{}] failure=[{}]",
-				userId, response.getSuccessCount(), response.getFailureCount());
+		log.info("Push sent success=[{}] failure=[{}]",
+				response.getSuccessCount(), response.getFailureCount());
 	}
 
 	@Override

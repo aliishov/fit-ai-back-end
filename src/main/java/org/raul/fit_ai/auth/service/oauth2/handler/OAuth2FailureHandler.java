@@ -31,7 +31,7 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 			AuthenticationException exception
 	) throws IOException {
 
-		log.warn("OAuth2 authentication failed: {}", exception.getMessage());
+		log.warn("OAuth2 authentication failed");
 
 		int status = resolveStatus(exception);
 		String message = resolveMessage(exception);

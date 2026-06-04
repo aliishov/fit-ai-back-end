@@ -46,7 +46,7 @@ public class WorkoutService {
 
 	public InitResponseDTO initWorkout(UserPrincipal principal) {
 		UUID userId = requireUserId(principal);
-		log.info("Checking workout init for user [{}]", userId);
+		log.info("Checking workout init");
 
 		boolean hasProfile = userProfileService.existsByUserId(userId);
 		boolean profileComplete = userProfileService.hasCompleteProfile(userId);
@@ -72,7 +72,7 @@ public class WorkoutService {
 	public PlanIdResponseDTO generateWorkout(UserPrincipal principal, GenerateWorkoutRequestDTO request) {
 		UUID userId = requireUserId(principal);
 		validateGenerateRequest(request);
-		log.info("Generating workout plan for user [{}]", userId);
+		log.info("Generating workout plan");
 
 		if (workoutPlanRepository.existsByUserIdAndStatusIn(userId, OPEN_PLAN_STATUSES)) {
 			throw new BadRequestException("User already has an active or pending workout plan");
@@ -85,13 +85,13 @@ public class WorkoutService {
 
 		workoutPlanGenerationService.generateAsync(plan.getId(), userId);
 
-		log.info("Plan generation started planId=[{}] userId=[{}]", plan.getId(), userId);
+		log.info("Plan generation started planId=[{}]", plan.getId());
 		return new PlanIdResponseDTO(plan.getId());
 	}
 
 	public PlanResponseDTO getPlan(UserPrincipal principal, UUID planId) {
 		UUID userId = requireUserId(principal);
-		log.info("Getting plan [{}] for user [{}]", planId, userId);
+		log.info("Getting plan [{}]", planId);
 
 		WorkoutPlan plan = workoutPlanRepository.findByIdAndUserId(planId, userId)
 				.orElseThrow(() -> new EntityNotFoundException("Workout plan not found"));

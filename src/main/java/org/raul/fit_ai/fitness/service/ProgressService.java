@@ -35,7 +35,7 @@ public class ProgressService {
 				principal,
 				request
 		);
-		log.info("Recording progress for principal [{}]", normalizedRequest.userId());
+		log.info("Recording progress");
 
 		UserProgress userProgress = UserProgressMapper.toEntity(normalizedRequest);
 		userProgress = userProgressRepository.save(userProgress);
@@ -46,7 +46,7 @@ public class ProgressService {
 	public List<ProgressResponseDTO> getProgress(UserPrincipal principal, UUID planId) {
 		UUID userId = progressValidator.requireUserId(principal);
 		progressValidator.validatePlanForProgressRead(planId, userId);
-		log.info("Getting progress for plan [{}] and for principal [{}]", planId, userId);
+		log.info("Getting progress for plan [{}]", planId);
 
 		return userProgressRepository.findByUserIdAndPlanIdOrderByRecordedAtDesc(userId, planId)
 				.stream()
@@ -56,7 +56,7 @@ public class ProgressService {
 
 	public List<ProgressResponseDTO> getProgressHistory(UserPrincipal principal) {
 		UUID userId = progressValidator.requireUserId(principal);
-		log.info("Getting progress history for principal [{}]", userId);
+		log.info("Getting progress history");
 
 		return userProgressRepository.findByUserIdOrderByRecordedAtDesc(userId)
 				.stream()
@@ -66,7 +66,7 @@ public class ProgressService {
 
 	public ProgressResponseDTO getLatestProgress(UserPrincipal principal) {
 		UUID userId = progressValidator.requireUserId(principal);
-		log.info("Getting latest progress for principal [{}]", userId);
+		log.info("Getting latest progress");
 
 		return userProgressRepository.findFirstByUserIdOrderByRecordedAtDesc(userId)
 				.map(UserProgressMapper::toResponseDto)
@@ -76,7 +76,7 @@ public class ProgressService {
 	public ProgressResponseDTO getProgressRecord(UserPrincipal principal, UUID progressId) {
 		UUID userId = progressValidator.requireUserId(principal);
 		progressValidator.validateProgressId(progressId);
-		log.info("Getting progress record [{}] for principal [{}]", progressId, userId);
+		log.info("Getting progress record [{}]", progressId);
 
 		return userProgressRepository.findByIdAndUserId(progressId, userId)
 				.map(UserProgressMapper::toResponseDto)

@@ -25,13 +25,13 @@ public class NotificationEventListener {
 			concurrency = "3"
 	)
 	public void handleCritical(NotificationPayload payload) {
-		log.info("Consuming critical notification type=[{}] user=[{}]",
-				payload.type(), payload.userId());
+		log.info("Consuming critical notification type=[{}]",
+				payload.type());
 		try {
 			notificationService.send(payload);
 		} catch (Exception e) {
-			log.error("Failed to process critical notification type=[{}] user=[{}]",
-					payload.type(), payload.userId(), e);
+			log.error("Failed to process critical notification type=[{}]",
+					payload.type(), e);
 			throw e;
 		}
 	}
@@ -42,13 +42,13 @@ public class NotificationEventListener {
 			concurrency = "3"
 	)
 	public void handleTransactional(NotificationPayload payload) {
-		log.info("Consuming transactional notification type=[{}] user=[{}]",
-				payload.type(), payload.userId());
+		log.info("Consuming transactional notification type=[{}]",
+				payload.type());
 		try {
 			notificationService.send(payload);
 		} catch (Exception e) {
-			log.error("Failed to process transactional notification type=[{}] user=[{}]",
-					payload.type(), payload.userId(), e);
+			log.error("Failed to process transactional notification type=[{}]",
+					payload.type(), e);
 			throw e;
 		}
 	}
@@ -59,13 +59,13 @@ public class NotificationEventListener {
 			concurrency = "5"
 	)
 	public void handleScheduled(NotificationPayload payload) {
-		log.info("Consuming scheduled notification type=[{}] user=[{}]",
-				payload.type(), payload.userId());
+		log.info("Consuming scheduled notification type=[{}]",
+				payload.type());
 		try {
 			notificationService.send(payload);
 		} catch (Exception e) {
-			log.warn("Failed to process scheduled notification type=[{}] user=[{}] — skipping",
-					payload.type(), payload.userId(), e);
+			log.warn("Failed to process scheduled notification type=[{}] — skipping",
+					payload.type(), e);
 		}
 	}
 }
