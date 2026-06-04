@@ -27,7 +27,6 @@ public class TwilioSmsSender implements NotificationSender {
 
 	@Override
 	public void send(ResolvedNotificationPayload payload) {
-		// Avoid logging sensitive recipient data; log only high-level event
 		log.info("Sending SMS (recipient masked)");
 
 		try {
