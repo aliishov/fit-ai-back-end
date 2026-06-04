@@ -3,7 +3,6 @@ package org.raul.fit_ai.auth.service.jwt;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 public class JwtRegistry {
 
 	static String TOKEN_PREFIX = "jwt:";
@@ -31,14 +29,11 @@ public class JwtRegistry {
 				userId,
 				expiration,
 				TimeUnit.MILLISECONDS);
-
-		log.debug("{} with jti {} saved for user {}", tokenType, jti, userId);
 	}
 
 	public void revokeToken(String jti, long expiration, String tokenType) {
 		long ttlMs = expiration - System.currentTimeMillis();
 		if (ttlMs <= 0) {
-			log.warn("Attempted to revoke token {} with expired TTL", jti);
 			return;
 		}
 
@@ -59,8 +54,6 @@ public class JwtRegistry {
 
 		String refreshPattern = TOKEN_PREFIX + "REFRESH_TOKEN:*";
 		revokeTokensByPattern(refreshPattern, userId);
-
-		log.info("Revoked all tokens for user {}", userId);
 	}
 
 	private void revokeTokensByPattern(String pattern, String userId) {
@@ -89,7 +82,5 @@ public class JwtRegistry {
 				"revoked",
 				ttlMs,
 				TimeUnit.MILLISECONDS);
-
-		log.debug("Token with jti {} revoked", jti);
 	}
 }
