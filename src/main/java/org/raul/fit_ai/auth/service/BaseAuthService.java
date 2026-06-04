@@ -56,7 +56,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 		String accessToken = jwtManager.generateAccessToken(principal);
 		String refreshToken = jwtManager.generateRefreshToken(principal);
 
-		log.info("User [{}] signed in successfully", principal.getId());
+		log.info("User signed in successfully");
 
 		return new SignInResponseDTO(accessToken, refreshToken);
 	}
@@ -81,7 +81,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 		String newAccessToken = jwtManager.generateAccessToken(principal);
 		String newRefreshToken = jwtManager.rotateRefreshToken(principal, oldRefreshToken);
 
-		log.info("User [{}] rotated tokens", principal.getId());
+		log.info("Refresh token rotated successfully");
 
 		return new SignInResponseDTO(newAccessToken, newRefreshToken);
 	}
@@ -93,14 +93,13 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 		Optional<T> userOpt = findByIdentifier(identifier);
 
 		if (userOpt.isEmpty()) {
-			log.info("Password reset requested for non-existent identifier");
 			return new ResetTokenResponseDTO(UUID.randomUUID().toString());
 		}
 
 		BaseUser user = userOpt.get();
 		String resetToken = passwordResetTokenService.generatePasswordResetToken(user, identifier);
 
-		log.info("User [{}] requesting password reset", user.getId());
+		log.info("Password reset requested");
 		return new ResetTokenResponseDTO(resetToken);
 	}
 
@@ -121,7 +120,7 @@ public abstract class BaseAuthService<T extends BaseUser, R extends JpaRepositor
 
 		pushNotification(user, NotificationType.PASSWORD_CHANGED);
 
-		log.info("Password reset successfully for user [{}]", user.getId());
+		log.info("Password reset completed successfully");
 	}
 
 	protected abstract Optional<T> findByIdentifier(String identifier);
