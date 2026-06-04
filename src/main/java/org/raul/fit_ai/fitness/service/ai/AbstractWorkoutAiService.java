@@ -37,15 +37,15 @@ abstract class AbstractWorkoutAiService implements WorkoutAiService {
 	) {
 		String prompt = buildPrompt(profile, exercises, progressHistory, durationWeeks);
 
-		log.info("Calling {} for userId=[{}] exerciseCount=[{}]",
-				providerName, profile.getUserId(), exercises.size());
+		log.info("Calling AI provider [{}] exerciseCount=[{}]",
+				providerName, exercises.size());
 
 		String response = chatClient.prompt()
 				.user(prompt)
 				.call()
 				.content();
 
-		log.info("{} responded for userId=[{}]", providerName, profile.getUserId());
+		log.info("AI provider [{}] responded", providerName);
 
 		return parseResponse(response);
 	}
@@ -150,7 +150,7 @@ abstract class AbstractWorkoutAiService implements WorkoutAiService {
 		try {
 			return objectMapper.readValue(extractJsonObject(response), AiWorkoutPlanDTO.class);
 		} catch (JsonProcessingException e) {
-			log.error("Failed to parse AI response: {}", response);
+			log.error("Failed to parse AI response from provider [{}]", providerName, e);
 			throw new AiResponseParseException("Failed to parse workout plan from AI", e);
 		}
 	}
