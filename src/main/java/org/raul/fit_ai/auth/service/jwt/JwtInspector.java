@@ -76,22 +76,22 @@ public class JwtInspector {
 			String jti = claims.get("jti", String.class);
 
 			if (username == null || !username.equals(principal.getUsername())) {
-				log.warn("JWT username mismatch for user [{}]", principal.getId());
+				log.warn("JWT subject mismatch");
 				return false;
 			}
 
 			if (jwtRegistry.isTokenRevoked(jti)) {
-				log.warn("JWT token [{}] is revoked", jti);
+				log.warn("JWT token is revoked");
 				return false;
 			}
 
 			return true;
 
 		} catch (ExpiredJwtException e) {
-			log.warn("JWT token expired: {}", e.getMessage());
+			log.warn("JWT token expired");
 			return false;
 		} catch (JwtException | IllegalArgumentException e) {
-			log.error("Invalid JWT token: {}", e.getMessage());
+			log.warn("JWT validation failed type=[{}]", e.getClass().getSimpleName());
 			return false;
 		}
 	}
