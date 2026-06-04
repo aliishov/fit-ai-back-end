@@ -7,7 +7,6 @@ import org.raul.fit_ai.auth.model.UserPrincipal;
 import org.raul.fit_ai.auth.repository.DeviceTokenRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +16,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class DeviceTokenService {
 
 	private final DeviceTokenRepository deviceTokenRepository;
 
 	@Transactional
 	public void saveToken(UserPrincipal principal, DeviceTokenRequestDTO request) {
-		log.info("Saving device token for principal [{}]", principal.getId());
-
 		DeviceToken deviceToken = deviceTokenRepository
 				.findByUserId(principal.getId())
 				.map(existing -> {
