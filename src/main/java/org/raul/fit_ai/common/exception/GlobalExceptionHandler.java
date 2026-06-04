@@ -29,7 +29,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(InvalidOtpException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleInvalidOtp(InvalidOtpException ex) {
-		log.warn("Invalid OTP attempt: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.UNPROCESSABLE_CONTENT)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -37,7 +36,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleInvalidToken(InvalidTokenException ex) {
-		log.warn("Invalid token: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.UNAUTHORIZED)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -45,15 +43,13 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(NotificationException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleNotification(NotificationException ex) {
-		log.error("Notification error: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.SERVICE_UNAVAILABLE)
-				.body(BaseResponseDTO.error("Notification service unavailable — please try again"));
+				.body(BaseResponseDTO.error("Notification service unavailable - please try again"));
 	}
 
 	@ExceptionHandler(TemplateNotFoundException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleTemplateNotFound(TemplateNotFoundException ex) {
-		log.error("Template not found: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -61,7 +57,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(DuplicateResourceException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleDuplicateResource(DuplicateResourceException ex) {
-		log.warn("Duplicate resource: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.CONFLICT)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -69,7 +64,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(BadRequestException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleBadRequest(BadRequestException ex) {
-		log.warn("Bad request: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -77,7 +71,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleEntityNotFound(EntityNotFoundException ex) {
-		log.warn("Entity not found: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -85,7 +78,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(UnauthorizedException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleUnauthorized(UnauthorizedException ex) {
-		log.warn("Unauthorized: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.UNAUTHORIZED)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -93,7 +85,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(PasswordsDoNotMatchException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handlePasswordsDoNotMatch(PasswordsDoNotMatchException ex) {
-		log.warn("Passwords do not match: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.UNPROCESSABLE_CONTENT)
 				.body(BaseResponseDTO.error(ex.getMessage()));
@@ -109,7 +100,6 @@ public class GlobalExceptionHandler {
 						Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
 				));
 
-		log.warn("Validation failed: {}", errors);
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(BaseResponseDTO.error("Validation failed", errors));
@@ -124,7 +114,6 @@ public class GlobalExceptionHandler {
 						Collectors.mapping(ConstraintViolation::getMessage, Collectors.toList())
 				));
 
-		log.warn("Constraint violation: {}", errors);
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(BaseResponseDTO.error("Validation failed", errors));
@@ -132,7 +121,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleNotReadable(HttpMessageNotReadableException ex) {
-		log.warn("Malformed request body: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(BaseResponseDTO.error("Malformed request body"));
@@ -140,7 +128,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodNotAllowedException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleMethodNotAllowed(MethodNotAllowedException ex) {
-		log.warn("Method not allowed: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.METHOD_NOT_ALLOWED)
 				.body(BaseResponseDTO.error("Method not allowed"));
@@ -148,7 +135,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(NoResourceFoundException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleNoResourceFound(NoResourceFoundException ex) {
-		log.warn("Resource not found: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
 				.body(BaseResponseDTO.error("Resource not found"));
@@ -156,7 +142,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleAccessDenied(AccessDeniedException ex) {
-		log.warn("Access denied: {}", ex.getMessage());
 		return ResponseEntity
 				.status(HttpStatus.FORBIDDEN)
 				.body(BaseResponseDTO.error("Access denied"));
@@ -164,7 +149,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<BaseResponseDTO<Void>> handleGeneral(Exception ex) {
-		log.error("Unexpected error", ex);
+		log.error("Unexpected application error type=[{}]", ex.getClass().getSimpleName());
 		return ResponseEntity
 				.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(BaseResponseDTO.error("Internal server error"));
