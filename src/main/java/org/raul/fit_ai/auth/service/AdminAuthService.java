@@ -47,7 +47,7 @@ public class AdminAuthService extends BaseAuthService<AdminUser, AdminUserReposi
 
 	@Transactional
 	public URI createAdmin(UUID adminId, RegisterRequestDTO request) {
-		log.info("Admin [{}] attempting to create new admin account", adminId);
+		log.info("Admin account creation requested");
 
 		if (!userRepository.existsByIdAndEnabledTrue(adminId)) {
 			throw new UnauthorizedException("Only active admins can create new admin accounts");
@@ -61,7 +61,7 @@ public class AdminAuthService extends BaseAuthService<AdminUser, AdminUserReposi
 
 		pushNotification(saved, NotificationType.WELCOME);
 
-		log.info("Admin [{}] created new admin account [{}]", adminId, saved.getId());
+		log.info("Admin account created");
 		return URI.create("/api/v1/admin/auth/admins/" + saved.getId());
 	}
 
