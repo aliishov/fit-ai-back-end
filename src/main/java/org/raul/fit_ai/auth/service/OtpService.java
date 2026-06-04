@@ -54,7 +54,7 @@ public class OtpService {
 				.build());
 
 		sendNotification(user, type, otp, destination);
-		log.info("OTP sent to [{}] type=[{}] user=[{}]", destination, type, user.getId());
+		log.info("OTP notification requested type=[{}]", type);
 	}
 
 	@Transactional
