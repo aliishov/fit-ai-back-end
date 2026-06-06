@@ -162,7 +162,7 @@ class AppUserAuthServiceTest {
 
         service.phoneConfirm(principal, request);
 
-        assertTrue(user.isPhoneVerified());
+        assertTrue(user.getPhoneVerified());
         verify(userRepository).save(user);
     }
 
