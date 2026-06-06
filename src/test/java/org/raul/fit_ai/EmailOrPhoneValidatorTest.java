@@ -1,9 +1,12 @@
 package org.raul.fit_ai;
 
+import org.raul.fit_ai.auth.util.EmailOrPhoneValidator;
+
 import jakarta.validation.ConstraintValidatorContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.raul.fit_ai.auth.util.EmailOrPhoneValidator;
+
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -50,7 +53,7 @@ class EmailOrPhoneValidatorTest {
 
     @Test
     void invalidEmailProducesEmailMessage() {
-        String badEmail = "bad@com"; // missing proper domain TLD
+        String badEmail = "bad@com";
 
         boolean result = validator.isValid(badEmail, context);
 
