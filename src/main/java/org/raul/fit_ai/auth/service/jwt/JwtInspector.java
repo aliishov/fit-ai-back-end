@@ -39,7 +39,7 @@ public class JwtInspector {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	protected Claims extractAllClaims(String oldToken) {
+	public Claims extractAllClaims(String oldToken) {
 		return Jwts.parser()
 				.verifyWith(getSignInKey())
 				.build()
@@ -63,10 +63,6 @@ public class JwtInspector {
 
 	public String extractUserType(String token) {
 		return extractClaim(token, claims -> claims.get("userType", String.class));
-	}
-
-	public String extractJti(String token) {
-		return extractClaim(token, claims -> claims.get("jti", String.class));
 	}
 
 	public Boolean isTokenValid(String token, UserPrincipal principal) {
