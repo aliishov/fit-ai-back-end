@@ -79,7 +79,7 @@ public class OtpService {
 		return String.format("%0" + OTP_LENGTH + "d", otp);
 	}
 
-	protected String hashOtp(String otp) {
+	public String hashOtp(String otp) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(otp.getBytes(StandardCharsets.UTF_8));
