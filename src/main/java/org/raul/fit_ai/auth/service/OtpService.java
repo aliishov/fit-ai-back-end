@@ -73,7 +73,7 @@ public class OtpService {
 		return true;
 	}
 
-	protected String generateRawOtp() {
+	public String generateRawOtp() {
 		SecureRandom random = new SecureRandom();
 		int otp = random.nextInt((int) Math.pow(10, OTP_LENGTH));
 		return String.format("%0" + OTP_LENGTH + "d", otp);
