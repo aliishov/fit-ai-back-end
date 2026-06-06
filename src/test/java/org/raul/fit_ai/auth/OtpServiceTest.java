@@ -1,4 +1,4 @@
-package org.raul.fit_ai;
+package org.raul.fit_ai.auth;
 
 import org.raul.fit_ai.auth.model.BaseUser;
 import org.raul.fit_ai.auth.model.OtpToken;
