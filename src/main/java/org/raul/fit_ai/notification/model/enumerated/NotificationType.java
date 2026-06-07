@@ -12,5 +12,7 @@ public enum NotificationType {
 
 	WORKOUT_REMINDER,
 	WATER_REMINDER,
-	MEAL_REMINDER
+	MEAL_REMINDER,
+
+	REMINDER,
 }
