@@ -7,14 +7,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.raul.fit_ai.fitness.service.WorkoutPlanGenerationService;
@@ -163,7 +161,6 @@ class WorkoutPlanGenerationServiceTest {
         when(workoutAiService.generatePlan(eq(profile), anyList(), anyList(), eq(plan.getDurationWeeks())))
                 .thenReturn(aiPlan);
 
-        // Run
         service.generateAsync(planId, userId);
 
         verify(workoutPlanBuilder).buildAndSave(eq(plan), eq(aiPlan), any(Set.class));
