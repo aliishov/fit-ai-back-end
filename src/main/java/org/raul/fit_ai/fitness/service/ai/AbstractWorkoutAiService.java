@@ -16,7 +16,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import java.util.List;
 
 @Slf4j
-abstract class AbstractWorkoutAiService implements WorkoutAiService {
+public abstract class AbstractWorkoutAiService implements WorkoutAiService {
 
 	private final ChatClient chatClient;
 	private final ObjectMapper objectMapper;
